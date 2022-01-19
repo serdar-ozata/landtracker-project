@@ -1,0 +1,32 @@
+[
+  {
+    "plantedAt": "2016-05-18T16:00:00Z",
+    "name": "berk'in tarlasi",
+    "cost": 12000,
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        39.88559927341655,
+        32.70650954164379
+      ],
+      "adress": "Bilkent univ.",
+      "description": "Okul"
+    },
+    "value": 300000
+  },
+  {
+    "plantedAt": "2016-05-18T16:00:00Z",
+    "name": "berk'in tarlasi",
+    "cost": 12000,
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        39.88559927341655,
+        32.70650954164379
+      ],
+      "adress": "Bilkent univ.",
+      "description": "Okul"
+    },
+    "value": 300000
+  }
+]
