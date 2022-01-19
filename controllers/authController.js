@@ -51,10 +51,17 @@ exports.login = catchAsync(async (req, res, next) => {
 
     if (!user || !(await user.correctPassword(password, user.password))) {
         return next(new AppError('Incorrect email or password', 401));
-    }
-    const token = signToken(user._id);
+    };
     // 3) If everything ok, send token to client
     createAndSendToken("You're logged in", 200, user, res, false);
+    //const token = signToken(user._id);
+    //const cookieOptions = {
+        // expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 1000 * 60),
+        // secure: process.env.NODE_ENV !== "production",
+        //    httpOnly: true
+    //};
+
+
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
