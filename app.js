@@ -28,7 +28,7 @@ const app = express();
 app.use(helmet());
 // Rate limiter
 const limiter = rateLimit({
-    max: 50,
+    max: 500,
     windowMs: 60 * 60 * 1000, // 1 hour
     message: "We received to many requests from you! Please try again after an hour."
 });
@@ -58,7 +58,24 @@ app.use(hpp());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 //serving static files
+const CSP = 'Content-Security-Policy';
+const POLICY =
+    "default-src 'self' https://*.mapbox.com ;" +
+    "base-uri 'self';block-all-mixed-content;" +
+    "font-src 'self' https: data:;" +
+    "frame-ancestors 'self';" +
+    "img-src http://localhost:8000 'self' blob: data:;" +
+    "object-src 'none';" +
+    "script-src https: cdn.jsdelivr.net cdnjs.cloudflare.com api.mapbox.com 'self' blob: ;" +
+    "script-src-attr 'none';" +
+    "style-src 'self' https: 'unsafe-inline';" +
+    'upgrade-insecure-requests;';
+app.use((req, res, next) => {
+    res.setHeader(CSP, POLICY);
+    next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use('/', indexRouter);
 app.use('/user', userRouter);
@@ -67,6 +84,7 @@ app.use('/lands', landRouter);
 app.use(function (req, res, next) {
     next(new appError("Could not find the page " + req.originalUrl, 404))
 });
+
 
 // error handler
 app.use(errorController);

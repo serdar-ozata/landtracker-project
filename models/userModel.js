@@ -2,10 +2,6 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
-const abstractAssetSchema = require("./schemas/abstractAssetSchema");
-const farmSchema = require("./schemas/farmSchema");
-const landSchema = require("./schemas/landSchema");
-const realEstateSchema = require("./schemas/realEstateSchema");
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -21,11 +17,11 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         validate: [validator.isEmail, 'Please provide a valid email']
     },
-    role: {
-        type: String,
-        enum: ['user', 'prem-user', 'admin'],
-        default: 'user'
-    },
+    // role: {
+    //     type: String,
+    //     enum: ['user', 'prem-user', 'admin'],
+    //     default: 'user'
+    // },
     password: {
         type: String,
         required: [true, 'Please provide a password'],
@@ -52,8 +48,12 @@ const userSchema = new mongoose.Schema({
         default: true,
         //select: false
     },
-    assets: [abstractAssetSchema]
-});
+    canSee: {
+        type: [mongoose.Schema.ObjectId],
+        ref: 'AssetRepository'
+    }
+    //assets: [abstractAssetSchema]
+}, {discriminatorKey: "kind"});
 
 userSchema.methods.changedPasswordAfter = function (JWTTimeStamp) {
     if (this.passwordChangedAt) {
@@ -104,9 +104,6 @@ userSchema.methods.createPasswordResetToken = async function () {
 
     return resetToken;
 };
-userSchema.path("assets").discriminator("FarmLand", farmSchema);
-userSchema.path("assets").discriminator("Land", landSchema);
-userSchema.path("assets").discriminator("Real Estate", realEstateSchema);
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

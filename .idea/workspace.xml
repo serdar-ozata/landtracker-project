@@ -1,17 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e474bc50-f8d2-4da3-9d00-6346e721a7b4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/public/favicon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/logo192.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/logo512.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/manifest.json" afterDir="false" />
+    <list default="true" id="e474bc50-f8d2-4da3-9d00-6346e721a7b4" name="Changes" comment="sending Files">
+      <change afterPath="$PROJECT_DIR$/controllers/user/premUserController.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controllers/user/simpleUserController.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controllers/user/userController.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/premium/assetRepositoryModel.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/premium/globalFarmModel.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/premium/globalLandModel.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/premium/globalRealEstateModel.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/premium/premUserModel.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/simpleUserModel.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/cropRoutes.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/filterObj.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/bin_www.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/bin_www.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/authController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/userController.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/models/schemas/farmSchema.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/schemas/farmSchema.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/userModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/userModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/asset-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/asset-manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/static/js/main.604f95db.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/static/js/main.604f95db.js.LICENSE.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/static/js/main.604f95db.js.map" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/indexRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/indexRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/landRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/landRoutes.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/userRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/userRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/mail.js" beforeDir="false" afterPath="$PROJECT_DIR$/utils/mail.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +73,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/public" />
     <property name="nodejs_interpreter_path" value="node" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="ts.external.directory.path" value="D:\Programlar\WebStorm 2021.3.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -63,11 +82,11 @@
       <recent name="D:\Code\projects\landtracker\public" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Code\projects\landtracker\models\premium" />
+      <recent name="D:\Code\projects\landtracker\controllers\user" />
       <recent name="D:\Code\projects\landtracker\public" />
       <recent name="D:\Code\projects\landtracker\models\schemas" />
       <recent name="D:\Code\projects\landtracker\models" />
-      <recent name="D:\Code\projects\landtracker\public\test" />
-      <recent name="D:\Code\projects\landtracker" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -90,8 +109,24 @@
       <workItem from="1642483999987" duration="16322000" />
       <workItem from="1642525858280" duration="1611000" />
       <workItem from="1642527609712" duration="6235000" />
-      <workItem from="1642576481289" duration="2908000" />
+      <workItem from="1642576481289" duration="6324000" />
+      <workItem from="1642594910021" duration="595000" />
+      <workItem from="1642601345610" duration="3333000" />
+      <workItem from="1642668079652" duration="19752000" />
+      <workItem from="1642749863301" duration="5762000" />
+      <workItem from="1642759988032" duration="10090000" />
+      <workItem from="1642774673273" duration="4841000" />
+      <workItem from="1642787209894" duration="6392000" />
+      <workItem from="1642838746457" duration="5587000" />
     </task>
+    <task id="LOCAL-00001" summary="sending Files">
+      <created>1642579583220</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1642579583220</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -107,5 +142,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="sending Files" />
+    <option name="LAST_COMMIT_MESSAGE" value="sending Files" />
   </component>
 </project>

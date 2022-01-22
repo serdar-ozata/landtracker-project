@@ -12,7 +12,7 @@ const cropSchema = new mongoose.Schema({
     },
     cost: Number,
     revenue: Number
-}, {_id: false});
+});
 
 const farmSchema = new mongoose.Schema({
     currentCrop: cropSchema,

@@ -4,6 +4,7 @@ const {promisify} = require("util");
 const crypto = require("crypto");
 
 const User = require("../models/userModel")
+const SimpleUser = require("../models/simpleUserModel")
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const sendEmail = require("../utils/mail");
@@ -18,18 +19,28 @@ const createAndSendToken = function (status, statusCode, user, res, showUser) {
     const token = signToken(user._id);
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 1000 * 60),
-        secure: process.env.NODE_ENV !== "production",
-        httpOnly: true
+        secure: process.env.NODE_ENV === "production",
+        httpOnly: false
     };
     res.cookie("jwt", token, cookieOptions);
+    //console.log(res);
     if (showUser)
         res.status(statusCode).json({status, user, token});
     else
         res.status(statusCode).json({status, user, token});
 }
 
+exports.isPremium = function (req, res, next) {
+    if (req.user.kind === "Prem")
+        next()
+    else
+        next(new AppError("You are not authorized for this action", 401));
+}
+
 exports.signup = catchAsync(async function (req, res, next) {
-    const newUser = await User.create({
+
+    const newUser = await SimpleUser.create({
+        kind: "Simple",
         name: req.body.name,
         email: req.body.email,
         password: req.body.password,
@@ -42,25 +53,25 @@ exports.signup = catchAsync(async function (req, res, next) {
 exports.login = catchAsync(async (req, res, next) => {
     const {email, password} = req.body;
 
-    // 1) Check if email and password exist
+
     if (!email || !password) {
         return next(new AppError('Please provide email and password!', 400));
     }
-    // 2) Check if user exists && password is correct
+
     const user = await User.findOne({email}).select('+password');
 
     if (!user || !(await user.correctPassword(password, user.password))) {
         return next(new AppError('Incorrect email or password', 401));
-    };
-    // 3) If everything ok, send token to client
+    }
+    ;
+    console.log(user)
     createAndSendToken("You're logged in", 200, user, res, false);
     //const token = signToken(user._id);
     //const cookieOptions = {
-        // expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 1000 * 60),
-        // secure: process.env.NODE_ENV !== "production",
-        //    httpOnly: true
+    // expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 1000 * 60),
+    // secure: process.env.NODE_ENV !== "production",
+    //    httpOnly: true
     //};
-
 
 });
 
@@ -80,7 +91,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     const user = await User.findById(decoded.id);
     if (!user)
         return next(new AppError("User doesn't exist", 401));
-    //Console log !
+    // Console log !
     console.log(decoded.iat);
     if (user.changedPasswordAfter(decoded.iat))
         return next(new AppError("Your password has changed. You have to log in again", 401));
