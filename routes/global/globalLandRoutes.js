@@ -1,19 +1,20 @@
 const express = require('express');
-const authController = require("../controllers/authController");
-const userController = require("../controllers/user/simpleUserController");
-const cropRouter = require("./cropRoutes");
-const router = express.Router();
+const authController = require("../../controllers/authController");
+const repositoryController = require("../../controllers/repositoryController");
+const userController = require("../../controllers/user/simpleUserController");
+const cropRouter = require("../cropRoutes");
+const router = express.Router({mergeParams: true});
 
-router.use(authController.protect);
-router.use("/:landId/crop", cropRouter);
+
 router.route("/addLand")
     .get(function (req, res, next) {
         res.json(200).json({message: "Nothing to see here"});
     })
-    .post(function (req, res, next) {
+    .post(repositoryController.authorizedEdit,function (req, res, next) {
         userController.addLand(req, res, next);
     });
 
+router.use("/:landId/crop", cropRouter);
 router.route("/:landId")
     .get(function (req, res, next) {
         userController.showLand(req, res, next);
@@ -24,6 +25,7 @@ router.route("/:landId")
     .delete(function (req, res, next) {
         userController.deleteLand(req, res, next);
     });
+
 
 
 module.exports = router;

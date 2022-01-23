@@ -10,15 +10,25 @@ const assetReposSchema = new mongoose.Schema({
         type: "Number",
         default: 0
     },
+    name: {
+        type: String,
+        maxlength: 20,
+        min: 1,
+        default: "Public Repository"
+    },
+    limitOthersAuth: { // limits what people in "canEdit" can do
+      type: Boolean,
+      default: true
+    },
     owner: {
         type: mongoose.Schema.ObjectId,
         required: true
     },
-    canEdit:{
+    canEdit: {
         type: [mongoose.Schema.ObjectId],
         ref: "User"
     },
-    canSee:{
+    canSee: {
         type: [mongoose.Schema.ObjectId],
         ref: "User"
     }
@@ -26,4 +36,3 @@ const assetReposSchema = new mongoose.Schema({
 
 const AssetRepository = mongoose.model("AssetRepository", assetReposSchema);
 module.exports = AssetRepository;
-//const Land = Asset.

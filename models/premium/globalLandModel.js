@@ -1,6 +1,8 @@
-const landSchema = require("../schemas/landSchema");
 const Asset = require("./globalAssetModel");
-const Land = Asset.discriminator("Land", landSchema);
+const mongoose = require("mongoose");
+const Land = Asset.discriminator("Land", new mongoose.Schema({
+    usedFor: String
+}));
 
 
 module.exports = Land;

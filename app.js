@@ -17,9 +17,10 @@ const appError = require("./utils/appError");
 const errorController = require("./controllers/errorController");
 const indexRouter = require('./routes/indexRoutes');
 const userRouter = require('./routes/userRoutes');
-const landRouter = require("./routes/landRoutes");
+const landRouter = require("./routes/local/localLandRoutes");
 const {log} = require("debug");
 const {sanitize} = require("express-mongo-sanitize");
+const repositoryRouter = require("./routes/repositoriesRoutes");
 
 const app = express();
 
@@ -79,7 +80,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/user', userRouter);
-app.use('/lands', landRouter);
+app.use("/repository", repositoryRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(new appError("Could not find the page " + req.originalUrl, 404))

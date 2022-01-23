@@ -14,12 +14,30 @@ exports.attachRepository = catchAsync(async function (req, res, next) {
     }
 });
 
+exports.authorizedEdit = catchAsync(async function (req, res, next) {
+    if (req.repository.canEdit.includes(req.user._id))
+        next();
+    else
+        next(new AppError("You are not authorized for this action", 401))
+});
+exports.authorizedMax = catchAsync(async function (req, res, next) {
+    if (req.repository.owner === req.user._id) {
+        next();
+    } else if (req.repository.limitOthersAuth && req.repository.canEdit.includes(req.user._id))
+        next();
+    else
+        next(new AppError("You are not authorized for this action", 401))
+});
+
+//Land functions
 
 // Other functions
-exports.createRepository = catchAsync(async function (ownerId) {
-    const repos = await Repository.create({
-        owner: ownerId
-    });
-    console.log(repos)
-    return repos;
-});
+exports.createRepository = async function (ownerId) {
+    try {
+        return await Repository.create({
+            owner: ownerId
+        });
+    } catch (e) {
+        return undefined;
+    }
+}

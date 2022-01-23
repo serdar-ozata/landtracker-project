@@ -9,7 +9,6 @@ router.post('/signup', function (req, res, next) {
 });
 
 router.route("/login").post(function (req, res, next) {
-    console.log(req);
     authController.login(req, res, next);
 }).get(function (req, res, next) {
     res.status(200).sendFile(path.resolve(__dirname + '/../public/login.html'));

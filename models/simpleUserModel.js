@@ -6,10 +6,10 @@ const realEstateSchema = require("./schemas/realEstateSchema");
 const abstractAssetSchema = require("./schemas/abstractAssetSchema");
 const assetRepositoryModel = require("./premium/assetRepositoryModel");
 const simpleUserSchema = new mongoose.Schema({
-    assets: [abstractAssetSchema]
+    assets: {type:[abstractAssetSchema],default: []}
 });
 
-simpleUserSchema.path("assets").discriminator("FarmLand", farmSchema);
+simpleUserSchema.path("assets").discriminator("Farm Land", farmSchema);
 simpleUserSchema.path("assets").discriminator("Land", landSchema);
 simpleUserSchema.path("assets").discriminator("Real Estate", realEstateSchema);
 const SimpleUser = User.discriminator("Simple", simpleUserSchema);

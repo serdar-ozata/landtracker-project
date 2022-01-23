@@ -23,7 +23,6 @@ const globalAssetSchema = new mongoose.Schema({
         name: {
             type: String,
             required: true,
-            unique: true,
             index: "text"
         },
         group: {

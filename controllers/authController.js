@@ -20,10 +20,9 @@ const createAndSendToken = function (status, statusCode, user, res, showUser) {
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 1000 * 60),
         secure: process.env.NODE_ENV === "production",
-        httpOnly: false
+        httpOnly: true
     };
     res.cookie("jwt", token, cookieOptions);
-    //console.log(res);
     if (showUser)
         res.status(statusCode).json({status, user, token});
     else
@@ -39,14 +38,15 @@ exports.isPremium = function (req, res, next) {
 
 exports.signup = catchAsync(async function (req, res, next) {
 
-    const newUser = await SimpleUser.create({
+    const newUser = await User.create({
         kind: "Simple",
         name: req.body.name,
         email: req.body.email,
         password: req.body.password,
         passwordConfirm: req.body.passwordConfirm
     });
-    const token = signToken(newUser._id);
+
+
     createAndSendToken("You're signed up!", 201, newUser, res, true);
 });
 
@@ -63,16 +63,7 @@ exports.login = catchAsync(async (req, res, next) => {
     if (!user || !(await user.correctPassword(password, user.password))) {
         return next(new AppError('Incorrect email or password', 401));
     }
-    ;
-    console.log(user)
     createAndSendToken("You're logged in", 200, user, res, false);
-    //const token = signToken(user._id);
-    //const cookieOptions = {
-    // expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 1000 * 60),
-    // secure: process.env.NODE_ENV !== "production",
-    //    httpOnly: true
-    //};
-
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -152,3 +143,10 @@ exports.updatePassword = catchAsync(async function (req, res, next) {
         return next(new AppError("Incorrect password, please try again.", 400));
     }
 });
+
+exports.saveLand = async function (req, res, next) {
+    if (req.isLocal)
+        req.user.save({validateModifiedOnly: true});
+    else
+        req.land.save({validateModifiedOnly: true});
+}
