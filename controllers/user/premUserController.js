@@ -20,7 +20,7 @@ exports.upgradeUser = catchAsync(async function (req, res, next) {
             nLand.currentCrop = land.currentCrop;
             nLand.previousCrops = land.previousCrops;
         }
-        if (!nLand) return; // there are some edge cases
+        if (!nLand) return; // there are some edge cases unhandled
         promises.push(Asset.create([
             {
                 ...nLand,
@@ -36,7 +36,6 @@ exports.upgradeUser = catchAsync(async function (req, res, next) {
         name: user.name,
         email: user.email,
         password: user.password,
-        passwordConfirm: user.password,
         passwordChangedAt: user.passwordChangedAt,
         passwordResetToken: user.passwordResetToken,
         passwordResetExpires: user.passwordResetExpires,
@@ -48,4 +47,18 @@ exports.upgradeUser = catchAsync(async function (req, res, next) {
         results,
         nUser
     });
+});
+
+exports.addLand = catchAsync(async function (req, res, next) {
+    const data = userController.createLandData(req.body, next);
+    if (!data) return new AppError("No valid data has been sent by user", 400);
+    data.repos = req.repos._id;
+    const land = await Asset.create(data);
+    res.status(200).json({land});
+});
+
+exports.deleteLand = catchAsync(async function (req, res, next) {
+    await Asset.findByIdAndDelete(req.params._id);
+    await req.repository.changeLandCount(-1);
+    res.status(200).json({message: "Deleted"});
 });

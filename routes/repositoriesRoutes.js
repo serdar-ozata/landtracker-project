@@ -7,7 +7,7 @@ const globalRouter = require("./global/globalRepositoryRoutes");
 
 router.use(authController.protect);
 
-router.route("/")
+router.route("/").get(repositoryController.show)
     .post(authController.isPremium, async function (req, res, next) { //Creates a repository
         const repos = await repositoryController.createRepository(req.user._id);
     })

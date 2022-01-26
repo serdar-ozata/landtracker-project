@@ -1,0 +1,40 @@
+extends layout
+block content
+    main.main
+        if user.kind === "Prem"
+            for repository in user.canEdit
+                -isOwner = repository.owner === user._id
+                div.container(style="margin: 0.5rem auto auto")
+                    .card.border-dark
+                        .card-header
+                            a.btn.btn-outline-success.btn-navbar(role="button", href="/test") View Data
+                            a.btn.btn-outline-info.btn-navbar(role="button", href=`/repository/${repository._id}/edit`) Edit
+                            button.btn.btn-outline-danger.btn-navbar(role="button", class={disabled: !isOwner}) Delete
+                            if isOwner
+                                a.text-secondary(style="margin-left:1rem") You are the owner of this repository
+                            else
+                                a.text-secondary(style="margin-left:1rem") You can edit this repository
+                        include _cardBody
+        else
+            div.container(style="margin: 0.5rem auto auto")
+                .card.border-dark
+                    .card-header.justify-content-center
+                        a.btn.btn-outline-success.btn-navbar(role="button", href="/test") View Data
+                        span.text-secondary(style="margin-left:1rem") Info: You are the owner of this repository
+                    -repository = {name: "Local Repository", canSee:{length: 0}, canEdit:{length: 1}, landCount: user.assets.length}
+                    include _cardBody
+    for repository in user.canSee
+        div.container(style="margin: 0.5rem auto auto")
+            .card.border-dark
+                .card-header
+                    a.btn.btn-outline-success.btn-navbar(role="button", href="/test") View Data
+                    a.btn.btn-outline-info.btn-navbar.disabled(role="button", href=`/repository/${repository._id}/edit`) Edit
+                    a.btn.btn-outline-secondary.btn-navbar.disabled(role="button", href="/test") Users
+                    button.btn.btn-outline-danger.btn-navbar.disabled(role="button") Delete
+                    a.text-secondary(style="margin-left:1rem") You can only view this repository
+                include _cardBody
+
+
+
+
+

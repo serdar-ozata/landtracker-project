@@ -36,6 +36,14 @@ exports.isPremium = function (req, res, next) {
         next(new AppError("You are not authorized for this action", 401));
 }
 
+exports.logout = function (req, res) {
+    res.cookie("jwt", "loggedOut", {
+        expires: new Date(Date.now() + 100),
+        httpOnly: true
+    })
+    res.status(200).json({message: "success"});
+}
+
 exports.signup = catchAsync(async function (req, res, next) {
 
     const newUser = await User.create({
@@ -45,7 +53,6 @@ exports.signup = catchAsync(async function (req, res, next) {
         password: req.body.password,
         passwordConfirm: req.body.passwordConfirm
     });
-
 
     createAndSendToken("You're signed up!", 201, newUser, res, true);
 });
@@ -59,14 +66,34 @@ exports.login = catchAsync(async (req, res, next) => {
     }
 
     const user = await User.findOne({email}).select('+password');
-
     if (!user || !(await user.correctPassword(password, user.password))) {
         return next(new AppError('Incorrect email or password', 401));
     }
-    createAndSendToken("You're logged in", 200, user, res, false);
+    createAndSendToken("success", 200, user, res, false);
 });
 
+exports.isLoggedIn = catchAsync(async function(req,res,next){
+    const result = await checkToken(req);
+    if (result instanceof User) {
+        res.status(200).json({m:"success"});
+    } else
+        res.status(401).json({m:"fail"});
+});
+
+
 exports.protect = catchAsync(async (req, res, next) => {
+    const result = await checkToken(req);
+    if (result instanceof AppError)
+        next(result)
+    else if (result instanceof User) {
+        req.user = result;
+        res.locals.user = result;
+        res.locals.url = req.originalUrl;
+        next();
+    } else
+        next(new AppError("There is a problem with your session please login again", 401));
+});
+checkToken = (async function (req) {
     let token;
     if (
         req.headers.authorization &&
@@ -77,17 +104,14 @@ exports.protect = catchAsync(async (req, res, next) => {
         token = req.cookies.jwt;
     }
     if (!token)
-        return next(new AppError("Please log in", 401));
+        return new AppError("Please log in", 401);
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
     if (!user)
-        return next(new AppError("User doesn't exist", 401));
-    // Console log !
-    console.log(decoded.iat);
+        return new AppError("User doesn't exist", 401);
     if (user.changedPasswordAfter(decoded.iat))
-        return next(new AppError("Your password has changed. You have to log in again", 401));
-    req.user = user;
-    next();
+        return new AppError("Your password has changed. You have to log in again", 401);
+    return user;
 });
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {

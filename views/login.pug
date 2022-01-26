@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    main
+        div.card.card-login
+            div.card-header Log in to your account
+            div.card-body
+                form
+                    .mb-3
+                        label.form-label(for="LoginEmail") Email address
+                        input#LoginEmail.form-control(type="email", aria-describedby="emailHelp")
+                    .mb-3
+                        label.form-label(for="LoginPassword") Password
+                        input#LoginPassword.form-control(type="password")
+                    .mb-3.form-check
+                        input#LoginCheck.form-check-input(type="checkbox")
+                        label.form-check-label(for="LoginCheck") Check me out
+                    button#loginSubmit.btn.btn-primary(type="submit") Submit

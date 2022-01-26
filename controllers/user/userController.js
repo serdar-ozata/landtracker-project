@@ -3,6 +3,7 @@ const SimpleUser = require("../../models/simpleUserModel");
 const Asset = require("../../models/premium/globalAssetModel");
 const AppError = require("../../utils/appError");
 const filterObj = require("../../utils/filterObj");
+const {saveLand} = require("../authController");
 
 exports.updateMe = catchAsync(async function (req, res, next) {
     const filteredBody = filterObj(req.body, "name");
@@ -106,4 +107,17 @@ exports.attachLand = catchAsync(async function (req, res, next) {
     }
     if (req.land) next();
     else next(new AppError("Land couldn't be found", 404));
+});
+
+exports.showLand = catchAsync(async function (req, res, next) {
+    res.status(200).json({land: req.land});
+});
+
+exports.updateLand = catchAsync(async function (req, res, next) {
+    const filtered = filterObj(req.body, "location", "name", "group", "value", "currency", "area");
+    req.land.update(filtered)
+    const land = await saveLand(req, res, next);
+    res.status(200).json({
+        land
+    });
 });

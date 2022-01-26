@@ -9,14 +9,14 @@ const abstractAssetSchema = new mongoose.Schema({
                 enum: ["Point", "Polygon"]
             },
             coordinates: [Number],
-            address: String,
-            description: String
         },
         name: {
             type: String,
             required: true,
             index: "text"
         },
+        address: String,
+        description: String,
         group: {
             type: String,
             default: "None"

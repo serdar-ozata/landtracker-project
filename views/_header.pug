@@ -1,0 +1,33 @@
+header
+    //nav.nav.nav--tours
+    //    a.nav__el(href='/') All tours
+    //nav.nav.nav--user
+    //    if loggedIn
+    //        a.nav__el.nav__el--logout Log out
+    //        a.nav__el(href='/repositories')
+    //            span settings
+    //    else
+    //        a.nav__el(href='/login') Log in
+    //        a.nav__el.nav__el--cta(href='#') Sign up
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light
+        a.navbar-brand.font-weight-bold(href="#") Land Tracker
+        button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarSupportedContent", aria-controls="navbarSupportedContent", aria-expanded="false", aria-label="Toggle navigation")
+            span.navbar-toggler-icon
+        #navbarSupportedContent.collapse.navbar-collapse
+            if user
+                ul.navbar-nav.ml-auto
+                    li.nav-item.icon-nav
+                        a(href="/repository")
+                            img(src="/svg/archive.svg",width="28rem", class={iconActive: url === "/repository"})
+                    li.nav-item.icon-nav
+                        a(href="/user")
+                            img(src="/svg/user.svg",width="28rem", class={iconActive: url === "/user"})
+                    li.nav-item.icon-nav
+                        a(href="/logout")
+                            img.icon-nav(src="/svg/signout.svg",width="28rem")
+            else
+                ul.navbar-nav.ml-auto
+                    li.nav-item(class={active: url === "/login"})
+                        a.nav-link(href="/login") Log In
+                    li.nav-item(class={active: url === "/signup"})
+                        a.nav-link(href="/signup") Sign Up

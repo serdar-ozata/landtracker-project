@@ -21,27 +21,12 @@ exports.addLand = catchAsync(async function (req, res, next) {
     res.status(200).json({user});
 });
 // Internal function
-const getLand = async function (req, res, next) {
-    const land = await req.user.assets.id(req.params.landId)
-    if (!land)
-        return next(new AppError("Land couldn't be found", 404));
-    return land;
-}
-
-
-exports.showLand = catchAsync(async function (req, res, next) {
-    res.status(202).json({land: await getLand(req, res, next)});
-});
-
-exports.updateLand = catchAsync(async function (req, res, next) {
-    const land = await getLand(req, res, next);
-    const filtered = filterObj(req.body, "location", "name", "group", "value", "currency", "area");
-    land.update(filtered)
-    const nUser = await req.user.save({validateModifiedOnly: true});
-    res.status(200).json({
-        user: nUser
-    });
-});
+// const getLand = async function (req, res, next) {
+//     const land = await req.user.assets.id(req.params.landId)
+//     if (!land)
+//         return next(new AppError("Land couldn't be found", 404));
+//     return land;
+// }
 
 exports.deleteLand = catchAsync(async function (req, res, next) {
     req.user.assets.pull({_id: req.params.landId})

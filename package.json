@@ -4,9 +4,12 @@
   "private": true,
   "scripts": {
     "start": "nodemon app.js",
-    "s": "nodemon app.js"
+    "s": "nodemon app.js",
+    "watch:js": "parcel watch ./public/javascripts/index.js --out-dir ./public/javascripts --out-file bundle.js"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "axios": "^0.25.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
@@ -29,6 +32,7 @@
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "parcel-bundler": "^1.12.5"
   }
 }

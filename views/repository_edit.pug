@@ -1,0 +1,49 @@
+extends layout
+block content
+    main.main
+        .row
+            .col-6
+                ul.list-group.list-group-flush
+                    li.list-group-item Repository Name
+                    li.list-group-item Description
+                    li.list-group-item More authorization for users who can edit
+                    li.list-group-item Owner
+                    li.list-group-item Repository Visibility
+                    li.list-group-item Id (give this to other users so that they can find this repository)
+            .col-6
+                ul.list-group.list-group-flush
+                    li.list-group-item
+                        input.floatingInput#inName(value=repository.name)
+                    li.list-group-item
+                        input.floatingInput#inDescription(value=repository.description)
+                    li.list-group-item
+                        .form-check
+                            if repository.limitOthersAuth
+                                input#checkAuth.form-check-input(type="checkbox")
+                            else
+                                input#checkAuth.form-check-input(type="checkbox" checked)
+                            label.form-check-label(for="checkAuth")
+                                | Enable
+                    li.list-group-item= `${owner.name} | ${owner.email}`
+                    li.list-group-item
+                        -label1 = "Public" === repository.privacy
+                        -label2 = "Invite" === repository.privacy
+                        -label3 = "Private" === repository.privacy
+                        .form-check.form-check-inline
+                            input#Public.form-check-input(type="radio", name="inlineRadioOptions", value="option1" checked=label1)
+                            label.form-check-label(for="Public") Public
+                        .form-check.form-check-inline
+                            input#Invite.form-check-input(type="radio", name="inlineRadioOptions", value="option2" checked=label2)
+                            label.form-check-label(for="Invite") Invite-only
+                        .form-check.form-check-inline
+                            input#Private.form-check-input(type="radio", name="inlineRadioOptions", value="option3" checked=label3)
+                            label.form-check-label(for="Private") Private
+                    li.list-group-item= repository._id
+        .card
+            .card-header.row.justify-content-between
+                h4.user-header Can See
+                button.btn.btn-outline-dark(type="button",style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseWidthExample", aria-expanded="false", aria-controls="collapseWidthExample") Expand
+            .card-body
+                div
+                    #collapseWidthExample.collapse.collapse-horizontal
+                        include _editUserBody

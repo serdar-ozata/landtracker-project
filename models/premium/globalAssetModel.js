@@ -8,7 +8,7 @@ const globalAssetSchema = new mongoose.Schema({
         repos: {
             type: mongoose.Schema.ObjectId,
             required : true,
-            index: true
+            index: true,
         } ,
         location: {
             type: {
