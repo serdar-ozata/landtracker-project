@@ -1,37 +1,87 @@
 extends layout
 block content
     main.main
+        nav.navbar.navbar-light.repos-navbar
+            .container-fluid
+                div
+                    button.btn.btn-outline-primary(type="button", data-bs-toggle="modal", data-bs-target="#create-repos") Add
+                    button.btn.btn-outline-primary(type="button", data-bs-toggle="modal", data-bs-target="#create-request", style="margin-left:1rem") Send Request
+                #create-repos.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-labelledby="staticBackdropLabel", aria-hidden="true")
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5.modal-title Create new Repository
+                            .modal-body
+                                .row.g-2
+                                    .col-md
+                                        .form-floating.create-fields
+                                            input#floatingInName.form-control(maxlength="20")
+                                            label(for="floatingInName") Name
+                                    .col-md
+                                        .form-floating.create-fields
+                                            select#floatingInVisibility.form-select(aria-label="Repository Visibility")
+                                                option(selected value="Private") Private
+                                                option(value="Invite") Invite-only
+                                                option(value="Public") Public
+                                            label(for="floatingInVisibility") Repository Visibility
+                                .row.g-2
+                                    .col-md
+                                        .form-floating.create-fields
+                                            input#floatingInDesc.form-control(maxlength="100")
+                                            label(for="floatingInDesc") Description
+
+                            .modal-footer
+                                button.btn.btn-secondary#discardCreate(type="button", data-bs-dismiss="modal") Discard
+                                button.btn.btn-primary.disabled#submitCreate(type="button") Add
+                #create-request.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-labelledby="staticBackdropLabel", aria-hidden="true")
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5.modal-title Send a request
+                            .modal-body
+                                .row.g-2
+                                    .col-md
+                                        .form-floating.create-fields
+                                            input#floatingInRequest.form-control(maxlength="40")
+                                            label(for="floatingInRequest") Repository id
+                                        p You need to enter the id of the repository you want to access
+
+                            .modal-footer
+                                button.btn.btn-secondary#discardRequest(type="button", data-bs-dismiss="modal") Discard
+                                button.btn.btn-primary.disabled#submitRequest(type="button") Send
+
+
+                input.form-control.me-2.d-flex#search-input(type="search", placeholder="Search", aria-label="Search")
         if user.kind === "Prem"
             for repository in user.canEdit
-                -isOwner = repository.owner === user._id
-                div.container(style="margin: 0.5rem auto auto")
+                -isOwner = repository.owner.toString() === user._id.toString()
+                div.container.repos-card(style="margin: 0.5rem auto auto")
                     .card.border-dark
                         .card-header
                             a.btn.btn-outline-success.btn-navbar(role="button", href="/test") View Data
                             a.btn.btn-outline-info.btn-navbar(role="button", href=`/repository/${repository._id}/edit`) Edit
                             button.btn.btn-outline-danger.btn-navbar(role="button", class={disabled: !isOwner}) Delete
                             if isOwner
-                                a.text-secondary(style="margin-left:1rem") You are the owner of this repository
+                                span.text-secondary(style="margin-left:1rem") You are the owner of this repository
                             else
-                                a.text-secondary(style="margin-left:1rem") You can edit this repository
+                                span.text-secondary(style="margin-left:1rem") You can edit this repository
                         include _cardBody
         else
-            div.container(style="margin: 0.5rem auto auto")
+            div.container.repos-card(style="margin: 0.5rem auto auto")
                 .card.border-dark
                     .card-header.justify-content-center
                         a.btn.btn-outline-success.btn-navbar(role="button", href="/test") View Data
                         span.text-secondary(style="margin-left:1rem") Info: You are the owner of this repository
-                    -repository = {name: "Local Repository", canSee:{length: 0}, canEdit:{length: 1}, landCount: user.assets.length}
+                    -repository = {name: "Local Repository", canSee:{length: 0}, canEdit:{length: 0}, landCount: user.assets.length || 0}
                     include _cardBody
     for repository in user.canSee
-        div.container(style="margin: 0.5rem auto auto")
+        div.container.repos-card(style="margin: 0.5rem auto auto")
             .card.border-dark
                 .card-header
                     a.btn.btn-outline-success.btn-navbar(role="button", href="/test") View Data
                     a.btn.btn-outline-info.btn-navbar.disabled(role="button", href=`/repository/${repository._id}/edit`) Edit
-                    a.btn.btn-outline-secondary.btn-navbar.disabled(role="button", href="/test") Users
                     button.btn.btn-outline-danger.btn-navbar.disabled(role="button") Delete
-                    a.text-secondary(style="margin-left:1rem") You can only view this repository
+                    span.text-secondary(style="margin-left:1rem") You can only view this repository
                 include _cardBody
 
 

@@ -1,49 +1,123 @@
 extends layout
 block content
     main.main
-        .row
-            .col-6
-                ul.list-group.list-group-flush
-                    li.list-group-item Repository Name
-                    li.list-group-item Description
-                    li.list-group-item More authorization for users who can edit
-                    li.list-group-item Owner
-                    li.list-group-item Repository Visibility
-                    li.list-group-item Id (give this to other users so that they can find this repository)
-            .col-6
-                ul.list-group.list-group-flush
-                    li.list-group-item
-                        input.floatingInput#inName(value=repository.name)
-                    li.list-group-item
-                        input.floatingInput#inDescription(value=repository.description)
-                    li.list-group-item
-                        .form-check
-                            if repository.limitOthersAuth
-                                input#checkAuth.form-check-input(type="checkbox")
-                            else
-                                input#checkAuth.form-check-input(type="checkbox" checked)
-                            label.form-check-label(for="checkAuth")
-                                | Enable
-                    li.list-group-item= `${owner.name} | ${owner.email}`
-                    li.list-group-item
-                        -label1 = "Public" === repository.privacy
-                        -label2 = "Invite" === repository.privacy
-                        -label3 = "Private" === repository.privacy
-                        .form-check.form-check-inline
-                            input#Public.form-check-input(type="radio", name="inlineRadioOptions", value="option1" checked=label1)
-                            label.form-check-label(for="Public") Public
-                        .form-check.form-check-inline
-                            input#Invite.form-check-input(type="radio", name="inlineRadioOptions", value="option2" checked=label2)
-                            label.form-check-label(for="Invite") Invite-only
-                        .form-check.form-check-inline
-                            input#Private.form-check-input(type="radio", name="inlineRadioOptions", value="option3" checked=label3)
-                            label.form-check-label(for="Private") Private
-                    li.list-group-item= repository._id
         .card
-            .card-header.row.justify-content-between
-                h4.user-header Can See
-                button.btn.btn-outline-dark(type="button",style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseWidthExample", aria-expanded="false", aria-controls="collapseWidthExample") Expand
+            .card-header
+                .container-fluid
+                    .d-flex.justify-content-between
+                        h4.user-header(style="display:inline") Settings
+                        button.btn.btn-success.disabled#saveSettings(type="button",style= "margin-right:1.5rem") Save
             .card-body
+                -isOwner = repository.owner.toString() === user._id.toString()
+                .row
+                    .col-6
+                        ul.list-group.list-group-flush
+                            li.list-group-item Repository Name
+                            li.list-group-item Description
+                            li.list-group-item More authorization for users who can edit
+                            li.list-group-item Owner
+                            li.list-group-item Repository Visibility
+                            li.list-group-item Id (give this to other users so that they can find this repository)
+                    .col-6
+                        ul.list-group.list-group-flush
+                            li.list-group-item
+                                input.floatingInput#inName(value=repository.name)
+                            li.list-group-item
+                                input.floatingInput#inDescription(value=repository.description)
+                            li.list-group-item
+                                .form-check
+                                    if repository.limitOthersAuth
+                                        input#checkAuth.form-check-input(type="checkbox" class={disabled: !isOwner})
+                                    else
+                                        input#checkAuth.form-check-input(type="checkbox" checked class={disabled: !isOwner})
+                                    label.form-check-label(for="checkAuth")
+                                        | Enable
+                            li.list-group-item= `${owner.name} | ${owner.email}`
+                            li.list-group-item#radio-auth
+                                if authorizedMax
+                                    -label1 = "Public" === repository.privacy
+                                    -label2 = "Invite" === repository.privacy
+                                    -label3 = "Private" === repository.privacy
+                                    .form-check.form-check-inline
+                                        input#Public.form-check-input(type="radio", name="inlineRadioOptions", value="option1" checked=label1)
+                                        label.form-check-label(for="Public") Public
+                                    .form-check.form-check-inline
+                                        input#Invite.form-check-input(type="radio", name="inlineRadioOptions", value="option2" checked=label2)
+                                        label.form-check-label(for="Invite") Invite-only
+                                    .form-check.form-check-inline
+                                        input#Private.form-check-input(type="radio", name="inlineRadioOptions", value="option3" checked=label3)
+                                        label.form-check-label(for="Private") Private
+                                else
+                                    if repository.privacy === "Invite"
+                                        p Invite-Only
+                                    else
+                                        p= repository.privacy
+                            li.list-group-item= repository._id
+        .card(style="margin-top:1rem")
+            .card-header
+                .container-fluid
+                    .d-flex.justify-content-between
+                        h4.user-header Can Edit
+                        button.btn.btn-outline-dark(type="button",style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseEdit", aria-expanded="false", aria-controls="collapseWidthExample") Expand
+            .card-body
+                -can_edit = true
                 div
-                    #collapseWidthExample.collapse.collapse-horizontal
-                        include _editUserBody
+                    #collapseEdit.collapse
+                        .row
+                            .col
+                                ul.list-group.list-group-flush Name
+                            .col
+                                ul.list-group.list-group-flush Email
+                            .col
+                                ul.list-group.list-group-flush Account Type
+                            if authorizedMax
+                                .col-3
+                                    ul.list-group.list-group-flush Actions
+                        for iUser in repository.canEdit
+                            hr
+                            include _editUserBody
+        .card
+            .card-header
+                .container-fluid
+                    .d-flex.justify-content-between
+                        h4.user-header Can See
+                        button.btn.btn-outline-dark(type="button" style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseSee", aria-expanded="false", aria-controls="collapseWidthExample") Expand
+            .card-body
+                -can_edit = false
+                div
+                    #collapseSee.collaps
+                        .row
+                            .col
+                                ul.list-group.list-group-flush Name
+                            .col
+                                ul.list-group.list-group-flush Email
+                            .col
+                                ul.list-group.list-group-flush Account Type
+                            if authorizedMax
+                                .col-3
+                                    ul.list-group.list-group-flush Actions
+                        for iUser in repository.canSee
+                            hr
+                            include _editUserBody
+        if authorizedMax
+            .card
+                .card-header
+                    .container-fluid
+                        .d-flex.justify-content-between
+                            h4.user-header Requests
+                            button.btn.btn-outline-dark(type="button", style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseRequest", aria-expanded="false", aria-controls="collapseWidthExample") Expand
+                .card-body
+                    div
+                        #collapseRequest.collapse
+                            .row
+                                .col-3
+                                    ul.list-group.list-group-flush Name
+                                .col-3
+                                    ul.list-group.list-group-flush Email
+                                .col-3
+                                    ul.list-group.list-group-flush Account Type
+                                .col-3
+                                    ul.list-group.list-group-flush Actions
+                            for request in requests
+                                hr
+                                include _editRequestBody

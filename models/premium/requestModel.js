@@ -4,12 +4,16 @@ const requestSchema = new mongoose.Schema({
     from: {
         type: mongoose.Schema.ObjectId,
         required: true,
-        ref: "User"
+        ref: "User",
+        index: true
     },
     to: {
         type: mongoose.Schema.ObjectId,
         required: true,
-        ref: "AssetRepository"
+        ref: "AssetRepository",
+        index: true
     },
     requestedAt: Date
 });
+
+module.exports = mongoose.model("Request", requestSchema);

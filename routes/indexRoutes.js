@@ -21,11 +21,13 @@ router.get("/static/js/:name", function (req, res, next) {
 });
 
 router.get("/svgl/:name", function (req, res, next) {
-    console.log("here worked")
     res.sendFile(path.resolve(__dirname + `/../public/svg/l/${req.params.name}`));
 })
 router.get("/svg/:name", function (req, res, next) {
     res.sendFile(path.resolve(__dirname + `/../public/svg/${req.params.name}`));
+})
+router.get("/bundle.js.map", function (req, res, next) {
+    res.sendFile(path.resolve(__dirname + `/../public/javascripts/bundle.js.map`));
 })
 router.get("/static/css/:name", function (req, res, next) {
     res.sendFile(path.resolve(__dirname + `/../public/static/css/${req.params.name}`));

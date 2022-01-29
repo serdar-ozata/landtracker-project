@@ -42,7 +42,8 @@ exports.upgradeUser = catchAsync(async function (req, res, next) {
         canSee: user.canSee,
         canEdit: [repository._id]
     }], {validateBeforeSave: false});
-
+    repository.owner = nUser._id;
+    repository.save();
     res.status(201).json({
         results,
         nUser

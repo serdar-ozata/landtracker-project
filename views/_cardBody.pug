@@ -2,23 +2,29 @@
     .row.justify-content-between
         .col-6
             h3.card-title= repository.name
-        .col-4
+        .col-6
             .row
                 .col
-                    .row
-                        img.repos-icon(src="/svgl/users-alt.svg")
-                        if repository.canSee
-                            p.repos-data-text= repository.canSee.length.toString()
-                        else
-                            p.repos-data-text 0
+                    .row.card-col
+                        .col
+                            img.repos-icon(src="/svgl/users-alt.svg")
+                        .col
+                            if repository.canSee
+                                p.repos-data-text= repository.canSee.length.toString()
+                            else
+                                p.repos-data-text 0
                 .col
-                    .row
-                        img.repos-icon(src="/svgl/user-md.svg" )
-                        if repository.canEdit
-                            p.repos-data-text= (repository.canEdit.length + 1).toString()
-                        else
-                            p.repos-data-text 1
+                    .row.card-col
+                        .col
+                            img.repos-icon(src="/svgl/user-md.svg" )
+                        .col
+                            if repository.canEdit
+                                p.repos-data-text= (repository.canEdit.length + 1).toString()
+                            else
+                                p.repos-data-text 1
                 .col
-                    .row
-                        img.repos-icon(src="/svgl/location-point.svg")
-                        p.repos-data-text= repository.landCount.toString()
+                    .row.card-col
+                        .col
+                            img.repos-icon(src="/svgl/location-point.svg")
+                        .col
+                            p.repos-data-text= repository.landCount

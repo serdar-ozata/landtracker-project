@@ -29,7 +29,7 @@ const app = express();
 app.use(helmet());
 // Rate limiter
 const limiter = rateLimit({
-    max: 500,
+    max: 5000,
     windowMs: 60 * 60 * 1000, // 1 hour
     message: "We received to many requests from you! Please try again after an hour."
 });
@@ -65,7 +65,7 @@ const POLICY =
     "base-uri 'self';block-all-mixed-content;" +
     "font-src 'self' https: data:;" +
     "frame-ancestors 'self';" +
-    "img-src http://localhost:8000 'self' blob: data:;" +
+    "img-src http://localhost:3000 'self' blob: data:;" +
     "object-src 'none';" +
     "script-src https: cdn.jsdelivr.net cdnjs.cloudflare.com api.mapbox.com 'self' blob: ;" +
     "script-src-attr 'none';" +

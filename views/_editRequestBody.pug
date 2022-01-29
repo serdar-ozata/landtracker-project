@@ -1,0 +1,13 @@
+.row
+    - isPrem = request.from.kind === "Prem"
+    .col-3
+        ul.list-group.list-group-flush= request.from.name
+    .col-3
+        ul.list-group.list-group-flush= request.from.email
+    .col-3
+        ul.list-group.list-group-flush1= isPrem ? "Premium" : "Standard"
+    .col-3
+        ul.list-group.list-group-flush
+            row
+                button.btn.btn-outline-success.btn-sm.btn-edit-dropdown.btn-accept(id=`permission${request._id}`) Accept
+                button.btn.btn-outline-danger.btn-sm.btn-reject.btn-edit-dropdown(id=`reject${request._id}`) Reject

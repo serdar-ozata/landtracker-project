@@ -26,7 +26,7 @@ module.exports =  function (err, req, res, next) {
     // render the error page
     err.statusCode = err.statusCode || 500;
     err.status = err.status || "error";
-
+    console.log(err)
     if(err._message && err._message === "User validation failed") err = handleCastErrorDB(err);
     else if(err.code === 11000) err = handleDuplicateErrorDB(err);
     if(err.name === "JsonWebTokenError") err = handleJsonWebTokenError(err);
@@ -34,8 +34,7 @@ module.exports =  function (err, req, res, next) {
     if(err.isOperational)
         res.status(err.statusCode).json({status: err.status, message: err.message});
     else{
-        console.log(err);
-        res.status(505).json({status:"error",message: "unknown server  error"});
+        res.status(500).json({status:"error",message: "unknown server  error"});
     }
 }
 

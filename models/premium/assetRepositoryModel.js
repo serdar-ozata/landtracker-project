@@ -13,13 +13,12 @@ const assetReposSchema = new mongoose.Schema({
     name: {
         type: String,
         maxlength: 20,
-        min: 1,
+        minlength: 1,
         default: "Public Repository"
     },
     description: {
         type: String,
         maxlength: 100,
-        min: 0,
         default: "Not Provided"
     },
     limitOthersAuth: { // limits what people in "canEdit" can do
@@ -28,7 +27,6 @@ const assetReposSchema = new mongoose.Schema({
     },
     owner: {
         type: mongoose.Schema.ObjectId,
-        required: true,
         ref: "User"
     },
     canEdit: {
@@ -42,7 +40,7 @@ const assetReposSchema = new mongoose.Schema({
     privacy: {
         type: String,
         enum: ["Private", "Public", "Invite"],
-        default: ["Invite"]
+        default: "Invite"
     }
 })
 assetReposSchema.methods.changeLandCount = async function (i) {

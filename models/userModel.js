@@ -2,6 +2,9 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const Request = require("./premium/requestModel");
+const Repository = require("./premium/assetRepositoryModel");
+const AppError = require("../utils/appError");
 // ALWAYS upgrade simple User to prem if you want to create a prem user
 const userSchema = new mongoose.Schema({
     name: {
@@ -104,6 +107,27 @@ userSchema.methods.createPasswordResetToken = async function () {
 
     return resetToken;
 };
+
+userSchema.methods.sendRequest = async function (repoId) {
+    const repository = await Repository.findById(repoId);
+    if (!repository)
+        return new AppError("Invalid repository id", 400);
+    switch (repository.privacy) {
+        case "Public":
+            repository.canSee.push(this._id);
+            await repository.save();
+            return "accepted"
+        case "Invite":
+            await Request.create({
+                to: repoId,
+                from: this._id
+            });
+            return "pending";
+        default:
+            return new AppError("Private Repository", 401);
+    }
+}
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

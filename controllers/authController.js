@@ -36,7 +36,7 @@ exports.isPremium = function (req, res, next) {
         next(new AppError("You are not authorized for this action", 401));
 }
 
-exports.logout = function (req, res) {
+exports.logout = function (req, res, next) {
     res.cookie("jwt", "loggedOut", {
         expires: new Date(Date.now() + 100),
         httpOnly: true
