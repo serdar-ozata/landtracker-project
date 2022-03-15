@@ -1,88 +1,140 @@
 extends layout
 block content
     main.main
-        nav.navbar.navbar-light.repos-navbar
+        nav.navbar.nav-scroller.shadow-sm.search-bar.py-2
             .container-fluid
                 div
-                    button.btn.btn-outline-primary(type="button", data-bs-toggle="modal", data-bs-target="#create-repos") Add
-                    button.btn.btn-outline-primary(type="button", data-bs-toggle="modal", data-bs-target="#create-request", style="margin-left:1rem") Send Request
+                    if user.kind === "Prem"
+                        button.btn.btn-outline-light.btn-sm(type="button", data-bs-toggle="modal", data-bs-target="#create-repos")=__("Add")
+                        button.btn.btn-outline-light.btn-sm(type="button", data-bs-toggle="modal", data-bs-target="#create-request", style="margin-left:1rem")=__("Send a request")
+                    else
+                        button.btn.btn-outline-light.btn-sm(type="button", data-bs-toggle="modal", data-bs-target="#create-request")=__("Send a request")
+
                 #create-repos.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-labelledby="staticBackdropLabel", aria-hidden="true")
                     .modal-dialog
                         .modal-content
                             .modal-header
-                                h5.modal-title Create new Repository
+                                h5.modal-title=__("Create new Repository")
                             .modal-body
                                 .row.g-2
                                     .col-md
                                         .form-floating.create-fields
                                             input#floatingInName.form-control(maxlength="20")
-                                            label(for="floatingInName") Name
+                                            label(for="floatingInName")=__("Name")
                                     .col-md
                                         .form-floating.create-fields
                                             select#floatingInVisibility.form-select(aria-label="Repository Visibility")
-                                                option(selected value="Private") Private
-                                                option(value="Invite") Invite-only
-                                                option(value="Public") Public
-                                            label(for="floatingInVisibility") Repository Visibility
+                                                option(selected value="Private")=__("Private")
+                                                option(value="Invite")=__("Invite-only")
+                                                option(value="Public")=__("Public")
+                                            label(for="floatingInVisibility")=__("Repository Visibility")
                                 .row.g-2
                                     .col-md
                                         .form-floating.create-fields
                                             input#floatingInDesc.form-control(maxlength="100")
-                                            label(for="floatingInDesc") Description
+                                            label(for="floatingInDesc")=__("Description")
 
                             .modal-footer
-                                button.btn.btn-secondary#discardCreate(type="button", data-bs-dismiss="modal") Discard
-                                button.btn.btn-primary.disabled#submitCreate(type="button") Add
+                                button.btn.btn-secondary#discardCreate(type="button", data-bs-dismiss="modal")=__("Discard")
+                                button.btn.btn-primary.disabled#submitCreate(type="button")=__("Add")
                 #create-request.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-labelledby="staticBackdropLabel", aria-hidden="true")
                     .modal-dialog
                         .modal-content
                             .modal-header
-                                h5.modal-title Send a request
+                                h5.modal-title=__("Send a request")
                             .modal-body
                                 .row.g-2
                                     .col-md
                                         .form-floating.create-fields
                                             input#floatingInRequest.form-control(maxlength="40")
-                                            label(for="floatingInRequest") Repository id
-                                        p You need to enter the id of the repository you want to access
+                                            label(for="floatingInRequest")=__("Repository id")
+                                            .custom-feedback=__("Cannot find a repository with this id. Make sure you've provided the correct id")
+                                            .custom-feedback=__("This is a private repository. You cannot send a request to this repository")
+                                            .custom-feedback=__("You have already sent a request to this repository")
+                                            .custom-feedback=__("You already have access to this repository")
+                                            .custom-feedback=__("You reached the maximum number of requests you can send. Please remove some of your requests")
+                                            .custom-feedback=__("You reached the maximum number of repositories you can join. Please leave from repositories that you \"can see\"")
+                                .row.g-2
+                                    .col-md
+                                        p=__("You need to enter the id of the repository you want to access")
+                                .row.g-2
+                                    .col-md
+                                        .form-floating.create-fields
+                                            input#floatingInMessage.form-control(maxlength="50")
+                                            label(for="floatingInMessage")=__("Message (Optional)")
 
                             .modal-footer
-                                button.btn.btn-secondary#discardRequest(type="button", data-bs-dismiss="modal") Discard
-                                button.btn.btn-primary.disabled#submitRequest(type="button") Send
+                                button.btn.btn-secondary#discardRequest(type="button", data-bs-dismiss="modal")=__("Discard")
+                                button.btn.btn-primary.disabled#submitRequest(type="button")=__("Send")
 
 
-                input.form-control.me-2.d-flex#search-input(type="search", placeholder="Search", aria-label="Search")
+                input.form-control.me-2.d-flex.btn-sm#search-input(type="search", placeholder="Search", aria-label="Search")
         if user.kind === "Prem"
             for repository in user.canEdit
                 -isOwner = repository.owner.toString() === user._id.toString()
-                div.container.repos-card(style="margin: 0.5rem auto auto")
+                div.container.repos-card
                     .card.border-dark
                         .card-header
-                            a.btn.btn-outline-success.btn-navbar(role="button", href="/test") View Data
-                            a.btn.btn-outline-info.btn-navbar(role="button", href=`/repository/${repository._id}/edit`) Edit
-                            button.btn.btn-outline-danger.btn-navbar(role="button", class={disabled: !isOwner}) Delete
+                            a.btn.btn-outline-success.btn-navbar(role="button", href="/test")=__("View Data")
+                            a.btn.btn-outline-info.btn-navbar(role="button", href=`/repository/${repository._id}/edit` )=__("Edit")
                             if isOwner
-                                span.text-secondary(style="margin-left:1rem") You are the owner of this repository
+                                button.btn.btn-outline-danger.btn-navbar.id-container(role="button" data-bs-id=repository._id data-bs-toggle="modal" data-bs-target="#deleteModal")=__("Delete")
+                                span.text-secondary(style="margin-left:1rem")=__("You are the owner of this repository")
                             else
-                                span.text-secondary(style="margin-left:1rem") You can edit this repository
+                                button.btn.btn-outline-danger.btn-navbar.id-container(role="button" data-bs-id=repository._id data-bs-toggle="modal" data-bs-target="#leaveModal")=__("Leave")
+                                span.text-secondary(style="margin-left:1rem")=__("You can edit this repository")
                         include _cardBody
         else
-            div.container.repos-card(style="margin: 0.5rem auto auto")
+            div.container.repos-card
                 .card.border-dark
                     .card-header.justify-content-center
-                        a.btn.btn-outline-success.btn-navbar(role="button", href="/test") View Data
-                        span.text-secondary(style="margin-left:1rem") Info: You are the owner of this repository
+                        a.btn.btn-outline-success.btn-navbar(role="button", href="/test")=__("View Data")
+                        span.text-secondary(style="margin-left:1rem")=__("You are the owner of this repository")
                     -repository = {name: "Local Repository", canSee:{length: 0}, canEdit:{length: 0}, landCount: user.assets.length || 0}
                     include _cardBody
     for repository in user.canSee
-        div.container.repos-card(style="margin: 0.5rem auto auto")
+        div.container.repos-card
             .card.border-dark
                 .card-header
-                    a.btn.btn-outline-success.btn-navbar(role="button", href="/test") View Data
-                    a.btn.btn-outline-info.btn-navbar.disabled(role="button", href=`/repository/${repository._id}/edit`) Edit
-                    button.btn.btn-outline-danger.btn-navbar.disabled(role="button") Delete
-                    span.text-secondary(style="margin-left:1rem") You can only view this repository
+                    a.btn.btn-outline-success.btn-navbar(role="button", href="/test")=__("View Data")
+                    a.btn.btn-outline-info.btn-navbar(role="button", href=`/repository/${repository._id}/edit`)=__("Edit")
+                    button.btn.btn-outline-danger.btn-navbar.id-container(data-bs-id=repository._id data-bs-toggle="modal" data-bs-target="#leaveModal")=__("Leave")
+                    span.text-secondary(style="margin-left:1rem")=__("You can only view this repository")
                 include _cardBody
+
+    .position-fixed.bottom-0.end-0.p-4(style="z-index: 11;" data-bs-delay="7000")
+        .toast.align-items-center.text-white.bg-success.border-0#toastSuccess(role="alert", aria-live="assertive", aria-atomic="true")
+            .d-flex
+                .toast-body#toast-message ?
+                button.btn-close.btn-close-white.me-2.m-auto(type="button", data-bs-dismiss="toast", aria-label="Close")
+    .position-fixed.bottom-0.end-0.p-4(style="z-index: 11;" data-bs-delay="20000")
+        .toast.align-items-center.text-white.bg-danger.border-0#toastError(role="alert", aria-live="assertive", aria-atomic="true")
+            .d-flex
+                .toast-body
+                    span#toast-err-message There is something wrong in your request. Please try again later. Error Code:
+                    span#toast-err-code 400
+                button.btn-close.btn-close-white.me-2.m-auto(type="button", data-bs-dismiss="toast", aria-label="Close")
+    #deleteModal.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-labelledby="staticBackdropLabel", aria-hidden="true")
+        .modal-dialog.modal-dialog-centered(role="document")
+            .modal-content.rounded-4.shadow
+                .modal-body.p-4.text-center
+                    h5.mb-0=__("Are you sure about deleting this repository ?")
+                    p.mb-0=__("This action cannot be undone")
+                .modal-footer.flex-nowrap.p-0
+                    button.btn.btn-lg.btn-link.fs-6.text-decoration-none.col-6.m-0.rounded-0.border-right(type="button")
+                        strong=__("Yes")
+                    button.btn.btn-lg.btn-link.fs-6.text-decoration-none.col-6.m-0.rounded-0(type="button", data-bs-dismiss="modal")=__("No")
+    #leaveModal.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-labelledby="staticBackdropLabel", aria-hidden="true")
+        .modal-dialog.modal-dialog-centered(role="document")
+            .modal-content.rounded-4.shadow
+                .modal-body.p-4.text-center
+                    h5.mb-0=__("Are you sure about leaving this repository ?")
+                    p.mb-0=__("This action cannot be undone")
+                .modal-footer.flex-nowrap.p-0
+                    button.btn.btn-lg.btn-link.fs-6.text-decoration-none.col-6.m-0.rounded-0.border-right.accept-btn(type="button")
+                        strong=__("Yes")
+                    button.btn.btn-lg.btn-link.fs-6.text-decoration-none.col-6.m-0.rounded-0(type="button", data-bs-dismiss="modal")=__("No")
+
 
 
 

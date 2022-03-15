@@ -8,21 +8,13 @@ router.route("/addLand")
     .get(function (req, res, next) {
         res.json(200).json({message: "Nothing to see here"});
     })
-    .post(function (req, res, next) {
-        simpleUserController.addLand(req, res, next);
-    });
+    .post(simpleUserController.addLand);
 
 router.use("/:landId/crop", cropRouter);
 router.route("/:landId")
-    .get(userController.attachLand, function (req, res, next) {
-        userController.showLand(req, res, next);
-    })
-    .patch(userController.attachLand, function (req, res, next) {
-        userController.updateLand(req, res, next);
-    })
-    .delete(function (req, res, next) {
-        simpleUserController.deleteLand(req, res, next);
-    });
+    .get(userController.attachLand, userController.showLand)
+    .patch(userController.attachLand, userController.updateLand)
+    .delete(simpleUserController.deleteLand);
 
 
 module.exports = router;

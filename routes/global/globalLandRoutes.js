@@ -11,21 +11,12 @@ router.route("/addLand")
     .get(function (req, res, next) {
         res.json(200).json({message: "Nothing to see here"});
     })
-    .post(repositoryController.authorizedEdit, function (req, res, next) {
-        premiumController.addLand(req, res, next);
-    });
+    .post(repositoryController.authorizedEdit, premiumController.addLand);
 
 router.use("/:landId/crop", cropRouter);
 router.route("/:landId")
-    .get(userController.attachLand, function (req, res, next) {
-        userController.showLand(req, res, next);
-    })
-    .patch(repositoryController.authorizedEdit, userController.attachLand, function (req, res, next) {
-        userController.updateLand(req, res, next);
-    })
-    .delete(repositoryController.authorizedEdit, function (req, res, next) {
-        premiumController.deleteLand(req, res, next);
-    });
-
+    .get(userController.attachLand, userController.showLand)
+    .patch(repositoryController.authorizedEdit, userController.attachLand, userController.updateLand)
+    .delete(repositoryController.authorizedEdit, premiumController.deleteLand);
 
 module.exports = router;

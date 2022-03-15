@@ -15,13 +15,16 @@ router.route("/")
             repository: await req.repository.populate("canEdit canSee owner")
         });
     })
-    .delete(repositoryController.isOwner, repositoryController.deleteRepository);
+    .delete(repositoryController.leave);
 
 router.route("/permission/:permId")
     .post(repositoryController.authorizedMax, requestController.validateRepository, requestController.accept)
     .delete(repositoryController.authorizedMax, requestController.validateRepository, requestController.reject);
 
-router.route("/edit/auth").patch(repositoryController.isOwner, repositoryController.updateHighSettings)
+router.route("/edit/auth")
+    .patch(repositoryController.isOwner, repositoryController.updateHighSettings)
+    .delete(repositoryController.isOwner, repositoryController.deleteRepository)
+
 
 router.route("/edit")
     .get(repositoryController.getData)

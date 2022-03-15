@@ -5,33 +5,49 @@ block content
             .card-header
                 .container-fluid
                     .d-flex.justify-content-between
-                        h4.user-header(style="display:inline") Settings
-                        button.btn.btn-success.disabled#saveSettings(type="button",style= "margin-right:1.5rem") Save
+                        h4.user-header(style="display:inline")= __("Settings")
+                        if authorizedMax
+                            button.btn.btn-success.disabled#saveSettings(type="button",style= "margin-right:1.5rem")= __("Save")
             .card-body
                 -isOwner = repository.owner.toString() === user._id.toString()
                 .row
                     .col-6
                         ul.list-group.list-group-flush
-                            li.list-group-item Repository Name
-                            li.list-group-item Description
-                            li.list-group-item More authorization for users who can edit
-                            li.list-group-item Owner
-                            li.list-group-item Repository Visibility
-                            li.list-group-item Id (give this to other users so that they can find this repository)
+                            li.list-group-item= __("Repository Name")
+                            li.list-group-item= __("Description")
+                            li.list-group-item= __("More authorization for users who can edit")
+                                img.icon-info.tt(src="/svgl/info-circle.svg" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    title=__("Allows them to accept requests, authorize or kick users in can see, change name, description and repository visibility"))
+                            li.list-group-item= __("Owner")
+                            li.list-group-item= __("Repository Visibility")
+                            li.list-group-item= __("Id")
+                                img.icon-info.tt(src="/svgl/info-circle.svg" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    title=__("Give this to other users so that they can find this repository"))
                     .col-6
                         ul.list-group.list-group-flush
                             li.list-group-item
-                                input.floatingInput#inName(value=repository.name)
+                                if authorizedMax
+                                    input.floatingInput#inName(value=repository.name)
+                                else
+                                    span= repository.name
                             li.list-group-item
-                                input.floatingInput#inDescription(value=repository.description)
+                                if authorizedMax
+                                    input.floatingInput#inDescription(value=repository.description)
+                                else
+                                    span= repository.description
                             li.list-group-item
-                                .form-check
+                                if isOwner
+                                    .form-check
+                                        if repository.limitOthersAuth
+                                            input#checkAuth.form-check-input(type="checkbox")
+                                        else
+                                            input#checkAuth.form-check-input(type="checkbox" checked)
+                                        label.form-check-label(for="checkAuth")= __("Enable")
+                                else
                                     if repository.limitOthersAuth
-                                        input#checkAuth.form-check-input(type="checkbox" class={disabled: !isOwner})
+                                        span= __("No")
                                     else
-                                        input#checkAuth.form-check-input(type="checkbox" checked class={disabled: !isOwner})
-                                    label.form-check-label(for="checkAuth")
-                                        | Enable
+                                        span= __("Yes")
                             li.list-group-item= `${owner.name} | ${owner.email}`
                             li.list-group-item#radio-auth
                                 if authorizedMax
@@ -40,39 +56,50 @@ block content
                                     -label3 = "Private" === repository.privacy
                                     .form-check.form-check-inline
                                         input#Public.form-check-input(type="radio", name="inlineRadioOptions", value="option1" checked=label1)
-                                        label.form-check-label(for="Public") Public
+                                        label.form-check-label(for="Public")= __("Public")
                                     .form-check.form-check-inline
                                         input#Invite.form-check-input(type="radio", name="inlineRadioOptions", value="option2" checked=label2)
-                                        label.form-check-label(for="Invite") Invite-only
+                                        label.form-check-label(for="Invite")= __("Invite-only")
                                     .form-check.form-check-inline
                                         input#Private.form-check-input(type="radio", name="inlineRadioOptions", value="option3" checked=label3)
-                                        label.form-check-label(for="Private") Private
+                                        label.form-check-label(for="Private")= __("Private")
                                 else
                                     if repository.privacy === "Invite"
-                                        p Invite-Only
+                                        span= __("Invite-Only")
                                     else
-                                        p= repository.privacy
-                            li.list-group-item= repository._id
-        .card(style="margin-top:1rem")
+                                        span=__(repository.privacy)
+                            li.list-group-item
+                                span#repId=repository._id
+                                button.btn.btn-sm.btn-outline-dark.align-top.shadow-none#idCopyButton(type="button"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Copy to clipboard")= __("Copy")
+        .card(style="margin-top:0rem")
             .card-header
                 .container-fluid
                     .d-flex.justify-content-between
-                        h4.user-header Can Edit
-                        button.btn.btn-outline-dark(type="button",style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseEdit", aria-expanded="false", aria-controls="collapseWidthExample") Expand
+                        .row
+                            .col.col-auto
+                                h4.user-header= __("Can Edit") + ":"
+                            .col.col-auto
+                                .row
+                                    .col
+                                        h4.user-header.card-item-count= repository.canEdit.length
+                                    .col.col-edit-icon
+                                        img.edit-icon(src="/svgl/user-md.svg")
+                        button.btn.btn-outline-dark(type="button",style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseEdit", aria-expanded="false", aria-controls="collapseWidthExample")=__("Expand")
             .card-body
                 -can_edit = true
                 div
                     #collapseEdit.collapse
                         .row
                             .col
-                                ul.list-group.list-group-flush Name
+                                ul.list-group.list-group-flush= __("Name")
                             .col
-                                ul.list-group.list-group-flush Email
+                                ul.list-group.list-group-flush= __("Email")
                             .col
-                                ul.list-group.list-group-flush Account Type
-                            if authorizedMax
+                                ul.list-group.list-group-flush= __("Account Type")
+                            if isOwner
                                 .col-3
-                                    ul.list-group.list-group-flush Actions
+                                    ul.list-group.list-group-flush= __("Actions")
                         for iUser in repository.canEdit
                             hr
                             include _editUserBody
@@ -80,22 +107,30 @@ block content
             .card-header
                 .container-fluid
                     .d-flex.justify-content-between
-                        h4.user-header Can See
-                        button.btn.btn-outline-dark(type="button" style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseSee", aria-expanded="false", aria-controls="collapseWidthExample") Expand
+                        .row
+                            .col.col-auto
+                                h4.user-header= __("Can See") + ":"
+                            .col.col-auto
+                                .row
+                                    .col
+                                        h4.user-header.card-item-count= repository.canSee.length
+                                    .col.col-edit-icon
+                                        img.edit-icon(src="/svgl/users-alt.svg")
+                        button.btn.btn-outline-dark(type="button" style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseSee", aria-expanded="false", aria-controls="collapseWidthExample")=__("Expand")
             .card-body
                 -can_edit = false
                 div
-                    #collapseSee.collaps
+                    #collapseSee.collapse
                         .row
                             .col
-                                ul.list-group.list-group-flush Name
+                                ul.list-group.list-group-flush=__("Name")
                             .col
-                                ul.list-group.list-group-flush Email
+                                ul.list-group.list-group-flush=__("Email")
                             .col
-                                ul.list-group.list-group-flush Account Type
+                                ul.list-group.list-group-flush=__("Account Type")
                             if authorizedMax
                                 .col-3
-                                    ul.list-group.list-group-flush Actions
+                                    ul.list-group.list-group-flush=__("Actions")
                         for iUser in repository.canSee
                             hr
                             include _editUserBody
@@ -104,20 +139,47 @@ block content
                 .card-header
                     .container-fluid
                         .d-flex.justify-content-between
-                            h4.user-header Requests
-                            button.btn.btn-outline-dark(type="button", style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseRequest", aria-expanded="false", aria-controls="collapseWidthExample") Expand
+                            .row
+                                .col.col-auto
+                                    h4.user-header=__("Requests") + ":"
+                                .col.col-auto
+                                    .row
+                                        .col
+                                            h4.user-header.card-item-count= requests.length
+                            button.btn.btn-outline-dark(type="button", style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseRequest", aria-expanded="false", aria-controls="collapseWidthExample")=__("Expand")
                 .card-body
                     div
                         #collapseRequest.collapse
                             .row
                                 .col-3
-                                    ul.list-group.list-group-flush Name
+                                    ul.list-group.list-group-flush=__("Name")
                                 .col-3
-                                    ul.list-group.list-group-flush Email
+                                    ul.list-group.list-group-flush=__("Email")
                                 .col-3
-                                    ul.list-group.list-group-flush Account Type
+                                    ul.list-group.list-group-flush=__("Account Type")
                                 .col-3
-                                    ul.list-group.list-group-flush Actions
+                                    ul.list-group.list-group-flush=__("Actions")
                             for request in requests
                                 hr
                                 include _editRequestBody
+        #requestMessageModal.modal.fade(tabindex="-1", aria-labelledby="reqMessageLabel", aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h5#reqMessageLabel.modal-title=__("Message")
+                        button.btn-close(type="button", data-bs-dismiss="modal", aria-label="Close")
+                    .modal-body
+                        p=__("Message")
+                    .modal-footer
+                        button.btn.btn-secondary(type="button", data-bs-dismiss="modal")=__("Close")
+        #warningModal.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-labelledby="staticBackdropLabel", aria-hidden="true")
+            .modal-dialog.modal-dialog-centered(role="document")
+                .modal-content.rounded-4.shadow
+                    .modal-body.p-4.text-center
+                        h5.mb-0#warning-text
+                        p.mb-0#warning-undone-text=__("This action cannot be undone")
+                    .modal-footer.flex-nowrap.p-0
+                        button.btn.btn-lg.btn-link.fs-6.text-decoration-none.col-6.m-0.rounded-0.border-right.accept-btn(type="button")
+                            strong=__("Yes")
+                        button.btn.btn-lg.btn-link.fs-6.text-decoration-none.col-6.m-0.rounded-0(type="button", data-bs-dismiss="modal")=__("No")
+

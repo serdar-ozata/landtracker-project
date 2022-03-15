@@ -6,7 +6,10 @@ const realEstateSchema = require("./schemas/realEstateSchema");
 const abstractAssetSchema = require("./schemas/abstractAssetSchema");
 const assetRepositoryModel = require("./premium/assetRepositoryModel");
 const simpleUserSchema = new mongoose.Schema({
-    assets: {type:[abstractAssetSchema],default: []}
+    assets: {
+        type: [abstractAssetSchema],
+        default: []
+    }
 });
 
 simpleUserSchema.path("assets").discriminator("Farm Land", farmSchema);

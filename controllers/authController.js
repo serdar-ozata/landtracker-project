@@ -7,7 +7,16 @@ const User = require("../models/userModel")
 const SimpleUser = require("../models/simpleUserModel")
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
-const sendEmail = require("../utils/mail");
+const Email = require("../utils/mail");
+
+//Inner functions
+exports.findResetPassword = async function (req) {
+    const hashedToken = crypto.createHash("sha256").update(req.params.token).digest("hex");
+    return User.findOne({
+        passwordResetToken: hashedToken,
+        passwordResetExpires: {$gt: Date.now()}
+    });
+}
 
 const signToken = id => {
     return jwt.sign({id}, process.env.JWT_SECRET, {
@@ -29,6 +38,8 @@ const createAndSendToken = function (status, statusCode, user, res, showUser) {
         res.status(statusCode).json({status, user, token});
 }
 
+//Middlewares
+
 exports.isPremium = function (req, res, next) {
     if (req.user.kind === "Prem")
         next()
@@ -41,7 +52,7 @@ exports.logout = function (req, res, next) {
         expires: new Date(Date.now() + 100),
         httpOnly: true
     })
-    res.status(200).json({message: "success"});
+    res.status(200).json({message: "logged out"});
 }
 
 exports.signup = catchAsync(async function (req, res, next) {
@@ -53,8 +64,14 @@ exports.signup = catchAsync(async function (req, res, next) {
         password: req.body.password,
         passwordConfirm: req.body.passwordConfirm
     });
-
-    createAndSendToken("You're signed up!", 201, newUser, res, true);
+    const mail = new Email(newUser);
+    const token = await newUser.createConfirmationToken();
+    const confirmURL = `${req.protocol}://${req.get("host")}/confirm/${token}`;
+    mail.sendText(res.__mf("Hey {name}! Use the link below to let us confirm your email address:\n{confirmURL}"),
+        {name:newUser.name, confirmURL});
+    newUser.save({validateBeforeSave: false});
+    res.status(201).json({message: "You're signed up!"});
+    //createAndSendToken("You're signed up!", 201, newUser, res, true);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -67,17 +84,19 @@ exports.login = catchAsync(async (req, res, next) => {
 
     const user = await User.findOne({email}).select('+password');
     if (!user || !(await user.correctPassword(password, user.password))) {
-        return next(new AppError('Incorrect email or password', 401));
+        return next(new AppError('EorP', 401));
     }
+    if (user.activated === false)
+        return next(new AppError("AcErr", 405));
     createAndSendToken("success", 200, user, res, false);
 });
 
-exports.isLoggedIn = catchAsync(async function(req,res,next){
+exports.isLoggedIn = catchAsync(async function (req, res, next) {
     const result = await checkToken(req);
     if (result instanceof User) {
-        res.status(200).json({m:"success"});
+        res.status(200).json({m: "success"});
     } else
-        res.status(401).json({m:"fail"});
+        res.status(401).json({m: "fail"});
 });
 
 
@@ -93,7 +112,8 @@ exports.protect = catchAsync(async (req, res, next) => {
     } else
         next(new AppError("There is a problem with your session please login again", 401));
 });
-checkToken = (async function (req) {
+
+const checkToken = (async function (req) {
     let token;
     if (
         req.headers.authorization &&
@@ -115,37 +135,35 @@ checkToken = (async function (req) {
 });
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
-    if (!req.body.email) return next(new AppError(`Please enter an email`), 400);
+    if (!req.body.email) return next(new AppError(`Please enter an email`, 400));
     const user = await User.findOne({email: req.body.email});
-    if (!user) return next(new AppError(`There is no email named ${req.body.email} in the server`));
+    if (!user) return next(new AppError(`There is no email named ${req.body.email} in the server`, 404));
+    if (user.passwordResetToken && Date.now() < user.passwordResetExpires) {
+        return next(new AppError("AlSent", 405));
+    }
+
     const token = await user.createPasswordResetToken();
     await user.save({validateBeforeSave: false});
 
     const resetURL = `${req.protocol}://${req.get("host")}/resetPassword/${token}`;
-    const message = "Hey looks like you forgot your password! Use the address below to reset your password. If you didn't forget" +
-        " your password, please ignore this email.\n" +
+    const message = res.__("Hey looks like you forgot your password! Use the address below to reset your password. If you didn't forget" +
+        " your password, please ignore this email.\n") +
         resetURL;
+    res.status(200).json({status: "success", message: "token sent", token});
     try {
-        await sendEmail({
-            email: user.email,
-            subject: "Password reset (valid for 10 min)",
-            text: message
-        });
+        const mail = new Email(user);
+        await mail.sendText(message, "Password Reset");
     } catch (e) {
         user.passwordResetExpires = undefined;
         user.passwordResetToken = undefined;
+        console.log(e);
         await user.save({validateBeforeSave: false});
-        return next(new AppError("Couldn't send the email. Try again some other time.", 500));
+        //return next(new AppError("Couldn't send the email. Try again some other time.", 500));
     }
-    res.status(200).json({status: "success", message: "token sent", token});
 });
 exports.resetPassword = catchAsync(async (req, res, next) => {
-    const hashedToken = crypto.createHash("sha256").update(req.params.token).digest("hex");
+    const user = await exports.findResetPassword(req);
 
-    const user = await User.findOne({
-        passwordResetToken: hashedToken,
-        passwordResetExpires: {$gt: Date.now()}
-    });
     if (!user)
         return next(new AppError("This token is invalid for you to reset your password", 400));
     user.password = req.body.password;
@@ -164,7 +182,7 @@ exports.updatePassword = catchAsync(async function (req, res, next) {
         await user.save();
         createAndSendToken("Your password has been successfully changed", 200, user, res, false);
     } else {
-        return next(new AppError("Incorrect password, please try again.", 400));
+        return next(new AppError("Incorrect password", 401));
     }
 });
 
@@ -174,3 +192,13 @@ exports.saveLand = async function (req, res, next) {
     else
         req.land.save({validateModifiedOnly: true});
 }
+
+exports.confirmEmail = catchAsync(async function (req, res, next) {
+    const hashedToken = crypto.createHash("sha256").update(req.params.token).digest("hex");
+    const user = await User.findOneAndUpdate({confirmToken: hashedToken},
+        {$unset: {confirmToken: 1}, activated: true});
+    if (user) {
+        res.redirect(308, "/login?tst=email");
+    } else
+        next(new AppError("Invalid token", 400));
+});

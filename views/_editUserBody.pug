@@ -11,12 +11,12 @@
             .col-3
                 ul.list-group.list-group-flush
                     row
-                        button.btn.btn-outline-info.btn-sm.btn-edit-dropdown.btn-auth(id=`auth${iUser._id}/std`) Authorize
-                        button.btn.btn-outline-danger.btn-sm.kick-user.btn-edit-dropdown(role="button", id=`kick${iUser._id}/std`) Kick
+                        button.btn.btn-outline-info.btn-sm.btn-edit-dropdown.btn-auth(data-bs-id=iUser._id data-bs-toggle="modal" data-bs-target="#warningModal")=__("Authorize")
+                        button.btn.btn-outline-danger.btn-sm.kick-user.btn-edit-dropdown(role="button", data-bs-id=`${iUser._id}/std` data-bs-toggle="modal" data-bs-target="#warningModal")=__("Kick")
         else if isOwner
             .col-3
                 ul.list-group.list-group-flush
                     row
-                        button.btn.btn-outline-warning.btn-sm.btn-edit-dropdown.btn-admin(id=`ad${iUser._id}/edit/admin`) Make Admin
-                        button.btn.btn-outline-info.btn-sm.btn-edit-dropdown.btn-deauth(id=`deauth${iUser._id}/edit`) Deauthorize
-                        button.btn.btn-outline-danger.btn-sm.kick-user.btn-edit-dropdown(role="button", id=`kick${iUser._id}/edit`) Kick
+                        button.btn.btn-outline-warning.btn-sm.btn-edit-dropdown.btn-admin(data-bs-id=iUser._id data-bs-toggle="modal" data-bs-target="#warningModal")=__("Make Admin")
+                        button.btn.btn-outline-info.btn-sm.btn-edit-dropdown.btn-deauth(data-bs-id=iUser._id data-bs-toggle="modal" data-bs-target="#warningModal")=__("Deauthorize")
+                        button.btn.btn-outline-danger.btn-sm.kick-user.btn-edit-dropdown(role="button", data-bs-id=`${iUser._id}/edit` data-bs-toggle="modal" data-bs-target="#warningModal")=__("Kick")

@@ -9,5 +9,9 @@
     .col-3
         ul.list-group.list-group-flush
             row
-                button.btn.btn-outline-success.btn-sm.btn-edit-dropdown.btn-accept(id=`permission${request._id}`) Accept
-                button.btn.btn-outline-danger.btn-sm.btn-reject.btn-edit-dropdown(id=`reject${request._id}`) Reject
+                button.btn.btn-outline-primary.btn-sm.btn-edit-dropdown(
+                    data-bs-toggle="modal" data-bs-target="#requestMessageModal"
+                    data-bs-message=request.message ? request.message : __("(Not Provided)")
+                    data-bs-owner= request.from.name )=__("Message")
+                button.btn.btn-outline-success.btn-sm.btn-edit-dropdown.btn-accept(id=`permission${request._id}`)=__("Accept")
+                button.btn.btn-outline-danger.btn-sm.btn-reject.btn-edit-dropdown(id=`reject${request._id}`)=__("Reject")

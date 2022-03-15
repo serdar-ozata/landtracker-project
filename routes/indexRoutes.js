@@ -2,20 +2,20 @@ const express = require('express');
 const router = express.Router();
 const path = require("path");
 const authController = require("../controllers/authController");
+const indexController = require("../controllers/indexController");
 /* GET home page. */
 
-router.post('/signup', function (req, res, next) {
-    authController.signup(req, res, next);
-});
+router.post('/signupJSON', authController.signup);
+
+router.route("/signup")
+    .get(indexController.renderSignup)
+    .post(authController.signup);
 
 router.route("/login")
     .post(authController.login)
-    .get(function (req, res, next) {
-        res.status(200).render("login", {
-            title: "Login"
-        });
-    });
-router.get("/logout", authController.logout)
+    .get(indexController.renderLogin);
+
+router.post("/logout", authController.logout)
 router.get("/static/js/:name", function (req, res, next) {
     res.sendFile(path.resolve(__dirname + `/../public/static/js/${req.params.name}`));
 });
@@ -41,25 +41,19 @@ router.get("/css/:name", function (req, res, next) {
 router.get("/js/:name", function (req, res, next) {
     res.sendFile(path.resolve(__dirname + `/../public/javascripts/${req.params.name}`));
 })
-router.route('/forgotPassword')
-    .get(function (req, res, next) {
-        res.status(203).json({message: "Not implemented"});
-    })
-    .post(function (req, res, next) {
-        authController.forgotPassword(req, res, next);
-    });
-router.patch("/resetPassword/:token", function (req, res, next) {
-    authController.resetPassword(req, res, next);
-});
-router.get("/loggedIn", authController.isLoggedIn);
-router.get('/', function (req, res, next) {
-    res.render('index', {title: 'LandTracker'});
-});
+router.route("/confirm/:token")
+    .get(authController.confirmEmail);
 
-router.get("/test", function (req, res, next) {
-    res.status(200).render("index", {
-        title: "Main Page",
-        url: req.url
-    });
-});
+router.route('/forgotPassword')
+    .get(indexController.renderForgotPassword)
+    .post(authController.forgotPassword);
+
+router.route("/resetPassword/:token")
+    .get(indexController.renderResetPassword)
+    .patch(authController.resetPassword);
+
+router.get("/loggedIn", authController.isLoggedIn);
+
+router.get('/', indexController.renderHome);
+
 module.exports = router;

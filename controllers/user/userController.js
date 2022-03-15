@@ -1,6 +1,7 @@
 const catchAsync = require("../../utils/catchAsync");
-const SimpleUser = require("../../models/simpleUserModel");
+const User = require("../../models/userModel");
 const Asset = require("../../models/premium/globalAssetModel");
+const Request = require("../../models/premium/requestModel");
 const AppError = require("../../utils/appError");
 const filterObj = require("../../utils/filterObj");
 const {saveLand} = require("../authController");
@@ -8,7 +9,7 @@ const {saveLand} = require("../authController");
 exports.updateMe = catchAsync(async function (req, res, next) {
     const filteredBody = filterObj(req.body, "name");
 
-    const user = await SimpleUser.findByIdAndUpdate(req.user.id, filteredBody, {
+    const user = await User.findByIdAndUpdate(req.user._id, filteredBody, {
         new: true,
         runValidators: true
     });
@@ -119,5 +120,12 @@ exports.updateLand = catchAsync(async function (req, res, next) {
     const land = await saveLand(req, res, next);
     res.status(200).json({
         land
+    });
+});
+
+exports.showUserData = catchAsync(async function(req,res,next){
+    res.locals.requests = await Request.find({from:req.user._id}).populate("to");
+    res.status(200).render("user_settings",{
+        title: "user"
     });
 });

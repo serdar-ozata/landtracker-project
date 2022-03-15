@@ -1,0 +1,168 @@
+extends layout
+block content
+    main
+        -isPrem = user.kind === "Prem";
+        .nav.shadow-sm.user-info-card.bg-light
+            .container-fluid
+                .row
+                    .col-auto.info-text.info-text-start
+                        strong= __("Profile Info")
+                hr(style="margin:0" )
+                .row.justify-content-between
+                    .col-8.me-auto
+                        .row
+                            .col-3.info-text.info-text-start
+                                span= __("Name")
+                            .col-3.info-text
+                                strong#name_field= user.name
+                    .col-auto.info-text.info-text-end
+                        button.btn(style="padding:0" type="button", data-bs-toggle="modal", data-bs-target="#name-modal")= __("change your name")
+
+                hr(style="margin:0")
+                .row.justify-content-start
+                    .col-8.me-auto
+                        .row
+                            .col-3.info-text.info-text-start
+                                span= __("Email Address")
+                            .col-3.info-text
+                                strong= user.email
+                hr(style="margin:0")
+                .row.justify-content-between
+                    .col-8.me-auto
+                        .row
+                            .col-3.info-text.info-text-start
+                                span= __("Account Type")
+                            .col-3.info-text
+                                strong#type_field= isPrem ? "Premium" : "Standard"
+                    .col-auto.info-text.info-text-end
+                        if !isPrem
+                            button.btn#upgrade-link(style="padding:0" type="button", data-bs-toggle="modal", data-bs-target="#upgrade-modal")= __("upgrade your account")
+        .nav.shadow-sm.user-info-card.bg-light
+            .container-fluid
+                .row
+                    .col-auto.info-text.info-text-start
+                        strong= __("Security")
+                hr(style="margin:0")
+                .row.justify-content-between
+                    .col-8.me-auto
+                        .row
+                            .col-3.info-text.info-text-start
+                                span= __("Password")
+                            .col-8.info-text
+                                span.user-settings-desc= __("Last changed: ")
+                                    span#pass-change-date= user.passwordChangedAt ? user.passwordChangedAt.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit", second:"2-digit"}) : "NA"
+                    .col-auto.info-text.info-text-end
+                        button.btn(style="padding:0" type="button", data-bs-toggle="modal", data-bs-target="#pass-modal")= __("change your password")
+                hr(style="margin:0")
+                - reqCount = requests.length
+                .row.justify-content-between
+                    .col-8.me-auto
+                        .row
+                            .col-3.info-text.info-text-start
+                                span Requests
+                            .col-8.info-text
+                                if reqCount === 0
+                                    span.user-settings-desc= __("You don't have any request")
+                                else if reqCount === 1
+                                    span.user-settings-desc= __("You have 1 request")
+                                else
+                                    span.user-settings-desc= __mf("You have {amount} requests", {amount: requests.length})
+                    .col-auto.info-text.info-text-end
+                        button.btn(style="padding:0" type="button", data-bs-toggle="modal", data-bs-target="#requests-modal")= __("manage your requests")
+        #name-modal.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-labelledby="staticBackdropLabel", aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h5.modal-title= __("Change Your Name")
+                    .modal-body
+                        .row.g-2
+                            .col-md
+                                .form-floating.create-fields
+                                    input#inChangeName.form-control
+                                    label(for="inChangeName")= __("New Name")
+                                    .custom-feedback#nameEmptyFeed= __("Please provide a name")
+                                    .custom-feedback#nameMaxFeed= __("Your name shouldn't exceed 30 characters")
+                                    .custom-feedback#nameCharFeed= __("Only digits, letters and white spaces are allowed")
+                    .modal-footer
+                        button.btn.btn-secondary#nameDiscard(type="button", data-bs-dismiss="modal")= __("Discard")
+                        button.btn.btn-primary.disabled#nameSubmit(type="button")= __("Save")
+        //- TODO
+        #pass-modal.modal.fade(data-bs-keyboard="true", tabindex="-1", aria-hidden="true" data-bs-backdrop="static")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h5.modal-title= __("Change Your Password")
+                    form.form-floating#passForm(novalidate)
+                        .modal-body
+                            input(value=user.email hidden autocomplete="username")
+                            .row.g-2
+                                .col-md
+                                    .form-floating.create-fields
+                                        input#inOldPass.form-control(type="password" autocomplete="current-password")
+                                        label(for="inOldPass")= __("Old Password")
+                                        .custom-feedback= __("This is not a valid password")
+                                        .custom-feedback= __("Wrong password! Please try again")
+                            .row.g-2
+                                .col-md
+                                    .form-floating.create-fields
+                                        input#inPass.form-control(type="password" autocomplete="new-password")
+                                        label(for="inPass")= __("New Password")
+                                        .custom-feedback#passEmptyFeed= __("Please provide a password")
+                                        .custom-feedback#passMinFeed= __("Your password should include 8 or more characters")
+                                        .custom-feedback#passMaxFeed= __("Your password shouldn't exceed 30 characters")
+                                        .custom-feedback#passCharFeed= __("Your password should contain at least 1 number and 1 character")
+                            .row.g-2
+                                .col-md
+                                    .form-floating.create-fields
+                                        input#inPassConfirm.form-control(type="password" autocomplete="new-password")
+                                        label(for="inPassConfirm")= __("Confirm Your New Password")
+                                        .invalid-feedback= __("Passwords don't match")
+                        .modal-footer
+                            button.btn.btn-secondary#passDiscard(type="button", data-bs-dismiss="modal")= __("Discard")
+                            button.btn.btn-primary#passSubmit(type="submit")= __("Save")
+        #upgrade-modal.modal.fade(tabindex="-1", aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h5.modal-title= __("Upgrade Your Account")
+                    .modal-body
+                        .row.g-2
+                            .col-md
+                                p= __("Your account is eligible for a 30-day trial. Click upgrade to start the process.")
+                                p= __("Note: It may take a while to upgrade your account.")
+                    .modal-footer
+                        button.btn.btn-secondary#upgradeDiscard(type="button", data-bs-dismiss="modal")= __("Discard")
+                        button.btn.btn-primary#upgradeSubmit(type="button")= __("Upgrade")
+
+
+        #requests-modal.modal.fade(tabindex="-1", aria-hidden="true")
+            .modal-dialog.modal-dialog-scrollable
+                .modal-content
+                    .modal-header
+                        h5.modal-title= __("Requests")
+                        h5.modal-title#request-count= requests.length
+                    .modal-body
+                        if requests.length === 0
+                            .row.g-2
+                                .col-md
+                                        p= __("You don't have any requests")
+                        else
+                            for request in requests
+                                .row.g-2
+                                    .col-md
+                                        include _requestCard
+                    .modal-footer
+                        button.btn.btn-secondary#requestClose(type="button", data-bs-dismiss="modal")= __("Close")
+    .position-fixed.bottom-0.end-0.p-4(style="z-index: 11;" data-bs-delay="7000")
+        .toast.align-items-center.text-white.bg-success.border-0#toastSuccess(role="alert", aria-live="assertive", aria-atomic="true")
+            .d-flex
+                .toast-body#toast-message= __("Your password has been successfully changed!")
+                button.btn-close.btn-close-white.me-2.m-auto(type="button", data-bs-dismiss="toast", aria-label="Close")
+    .position-fixed.bottom-0.end-0.p-4(style="z-index: 11;" data-bs-delay="7000")
+        .toast.align-items-center.text-white.bg-danger.border-0#toastError(role="alert", aria-live="assertive", aria-atomic="true")
+            .d-flex
+                .toast-body#toast-err-message There is something wrong in your request. Please try again later. Error Code:
+                    span#toast-err-code 400
+                button.btn-close.btn-close-white.me-2.m-auto(type="button", data-bs-dismiss="toast", aria-label="Close")
+
+

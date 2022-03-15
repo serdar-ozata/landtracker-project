@@ -13,7 +13,14 @@ const requestSchema = new mongoose.Schema({
         ref: "AssetRepository",
         index: true
     },
-    requestedAt: Date
+    requestedAt: {
+        type: Date,
+        default: new Date(Date.now())
+    },
+    message: {
+        type: String,
+        maxlength: 50
+    }
 });
 
 module.exports = mongoose.model("Request", requestSchema);

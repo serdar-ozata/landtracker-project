@@ -10,9 +10,11 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
+const compression = require("compression");
 
 dotenv.config({path: "./config.env"})
 //const authController = require("./controllers/authController");
+const i18n = require("./utils/language");
 const appError = require("./utils/appError");
 const errorController = require("./controllers/errorController");
 const indexRouter = require('./routes/indexRoutes');
@@ -33,7 +35,7 @@ const limiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
     message: "We received to many requests from you! Please try again after an hour."
 });
-app.use("/", limiter);
+app.use(limiter);
 
 
 // view engine setup
@@ -41,11 +43,23 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.use(express.static('public'));
 
+//TEMP
+const User = require("./models/userModel");
+
 mongoose.connect(process.env.DB_ADDRESS, {
     useNewUrlParser: true,
     useCreateIndex: true,
-    useFindAndModify: false
-}).then((con) => console.log("Connection established")).catch(err => console.log(err))
+    useFindAndModify: false,
+    useUnifiedTopology: true
+}).then((con) => {
+    console.log("Connection established");
+    // User.find().where("email").gte(0).exec().then(list => {
+    //     list.forEach(async user => {
+    //         user.activated = true;
+    //         await user.save({validateBeforeSave: false});
+    //     })
+    // });
+}).catch(err => console.log(err))
 app.use(logger('dev'));
 //body parser
 app.use(express.json({limit: "10kb"}));
@@ -55,13 +69,14 @@ app.use(mongoSanitize());
 app.use(xss());
 
 app.use(hpp());
-
+//app.use(compression());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(i18n.init);
 //serving static files
 const CSP = 'Content-Security-Policy';
 const POLICY =
-    "default-src 'self' https://*.mapbox.com ;" +
+    //"default-src 'self' https://*.mapbox.com ;" +
     "base-uri 'self';block-all-mixed-content;" +
     "font-src 'self' https: data:;" +
     "frame-ancestors 'self';" +
@@ -69,7 +84,7 @@ const POLICY =
     "object-src 'none';" +
     "script-src https: cdn.jsdelivr.net cdnjs.cloudflare.com api.mapbox.com 'self' blob: ;" +
     "script-src-attr 'none';" +
-    "style-src 'self' https: 'unsafe-inline';" +
+    //"style-src 'self' https: 'unsafe-inline';" +
     'upgrade-insecure-requests;';
 app.use((req, res, next) => {
     res.setHeader(CSP, POLICY);

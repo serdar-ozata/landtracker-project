@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e474bc50-f8d2-4da3-9d00-6346e721a7b4" name="Changes" comment="premium User, repository functionalities don't work">
-      <change afterPath="$PROJECT_DIR$/routes/global/userRepositoryRoutes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/_editRequestBody.pug" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/user_settings.pug" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/landtracker.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/landtracker.iml" afterDir="false" />
+    <list default="true" id="e474bc50-f8d2-4da3-9d00-6346e721a7b4" name="Changes" comment="demo launch">
+      <change afterPath="$PROJECT_DIR$/controllers/indexController.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/locales/en.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/locales/tr.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/javascripts/signup.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/javascripts/user_settings.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/stylesheets/style.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/svg/folder.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/svg/l/info-circle.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/svg/l/location-point.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/svg/l/user-md.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/svg/l/users-alt.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/svg/signout.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/svg/user.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scss/custom.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/language.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/_requestCard.pug" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/confirmEmail.pug" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/forgotPassword.pug" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/resetPassword.pug" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/signup.pug" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/authController.js" afterDir="false" />
@@ -14,23 +30,40 @@
       <change beforePath="$PROJECT_DIR$/controllers/repositoryController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/repositoryController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/requestController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/requestController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/user/premUserController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/user/premUserController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/premium/assetRepositoryModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/premium/assetRepositoryModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/user/userController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/user/userController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/premium/premUserModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/premium/premUserModel.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/premium/requestModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/premium/requestModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/simpleUserModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/simpleUserModel.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/userModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/userModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/asset-manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/favicon.ico" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/javascripts/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/javascripts/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/login.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/javascripts/repository.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/repository.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/javascripts/repository_edit.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/repository_edit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/logo192.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/logo512.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/robots.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/stylesheets/oldS.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/cropRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/cropRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/global/globalLandRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/global/globalLandRoutes.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/global/globalRepositoryRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/global/globalRepositoryRoutes.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/indexRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/indexRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/local/localRepositoryRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/local/localRepositoryRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/repositoriesRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/repositoriesRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/local/localLandRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/local/localLandRoutes.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/userRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/userRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/_cardBody.pug" beforeDir="false" afterPath="$PROJECT_DIR$/views/_cardBody.pug" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/mail.js" beforeDir="false" afterPath="$PROJECT_DIR$/utils/mail.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/_editRequestBody.pug" beforeDir="false" afterPath="$PROJECT_DIR$/views/_editRequestBody.pug" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/_editUserBody.pug" beforeDir="false" afterPath="$PROJECT_DIR$/views/_editUserBody.pug" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/_header.pug" beforeDir="false" afterPath="$PROJECT_DIR$/views/_header.pug" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/index.pug" beforeDir="false" afterPath="$PROJECT_DIR$/views/index.pug" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/layout.pug" beforeDir="false" afterPath="$PROJECT_DIR$/views/layout.pug" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/login.pug" beforeDir="false" afterPath="$PROJECT_DIR$/views/login.pug" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/repository.pug" beforeDir="false" afterPath="$PROJECT_DIR$/views/repository.pug" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/repository_edit.pug" beforeDir="false" afterPath="$PROJECT_DIR$/views/repository_edit.pug" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/user_settings.pug" beforeDir="false" afterPath="$PROJECT_DIR$/views/user_settings.pug" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,8 +74,10 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
-        <option value="JavaScript File" />
+        <option value="SCSS File" />
+        <option value="HTML File" />
         <option value="Pug File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -67,31 +102,52 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="16.13.2" />
     <property name="javascript.nodejs.core.library.typings.version" value="16.11.21" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/stylesheets/temp" />
-    <property name="list.type.of.created.stylesheet" value="CSS" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/svg/l" />
+    <property name="list.type.of.created.stylesheet" value="SCSS" />
     <property name="nodejs_interpreter_path" value="node" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsDialog.application.dockerConsole" />
-    <property name="ts.external.directory.path" value="D:\WebStorm 2021.3.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
+    <property name="settings.editor.selected.configurable" value="Template Data Languages" />
+    <property name="ts.external.directory.path" value="D:\Program Files\WebStorm 2021.3.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Code\projects\landtracker\public\svg\l" />
+      <recent name="D:\Code\projects\landtracker\public\svg" />
+      <recent name="D:\Code\projects\landtracker\public\stylesheets" />
       <recent name="D:\Code\projects\landtracker\public\stylesheets\temp" />
       <recent name="D:\Code\projects\landtracker\public" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Code\projects\landtracker\public\stylesheets" />
       <recent name="D:\Code\projects\landtracker\public\javascripts" />
       <recent name="D:\Code\projects\landtracker\routes\global" />
       <recent name="D:\Code\projects\landtracker\routes\local" />
       <recent name="D:\Code\projects\landtracker\routes" />
-      <recent name="D:\Code\projects\landtracker\routes\simple" />
     </key>
+  </component>
+  <component name="RunManager" selected="Node.js.bin\www">
+    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.start" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -137,7 +193,70 @@
       <workItem from="1643283210755" duration="1686000" />
       <workItem from="1643359279358" duration="22095000" />
       <workItem from="1643395764416" duration="11831000" />
-      <workItem from="1643449195185" duration="3518000" />
+      <workItem from="1643449195185" duration="7135000" />
+      <workItem from="1643531709117" duration="2284000" />
+      <workItem from="1643550928282" duration="2601000" />
+      <workItem from="1643641800486" duration="594000" />
+      <workItem from="1643692475020" duration="4057000" />
+      <workItem from="1643716572143" duration="504000" />
+      <workItem from="1643717105091" duration="512000" />
+      <workItem from="1643717675190" duration="520000" />
+      <workItem from="1643799020205" duration="4676000" />
+      <workItem from="1643876235046" duration="201000" />
+      <workItem from="1643914592677" duration="143000" />
+      <workItem from="1644155551543" duration="4000" />
+      <workItem from="1644424972871" duration="6602000" />
+      <workItem from="1644464432675" duration="5196000" />
+      <workItem from="1644479424920" duration="1834000" />
+      <workItem from="1644491671591" duration="3417000" />
+      <workItem from="1644505188586" duration="1308000" />
+      <workItem from="1644508801507" duration="83000" />
+      <workItem from="1644512648995" duration="688000" />
+      <workItem from="1644662889731" duration="8983000" />
+      <workItem from="1644678481493" duration="3088000" />
+      <workItem from="1644752149539" duration="2666000" />
+      <workItem from="1644754846945" duration="121000" />
+      <workItem from="1644760644564" duration="137000" />
+      <workItem from="1644860086792" duration="2791000" />
+      <workItem from="1644907215161" duration="20114000" />
+      <workItem from="1644938733522" duration="632000" />
+      <workItem from="1644941046612" duration="4255000" />
+      <workItem from="1645043922425" duration="1062000" />
+      <workItem from="1645081787823" duration="3776000" />
+      <workItem from="1645104060324" duration="8532000" />
+      <workItem from="1645123983026" duration="7867000" />
+      <workItem from="1645186568379" duration="3073000" />
+      <workItem from="1645199886917" duration="15274000" />
+      <workItem from="1645221522189" duration="675000" />
+      <workItem from="1645281103434" duration="596000" />
+      <workItem from="1645463083710" duration="307000" />
+      <workItem from="1645463421340" duration="5904000" />
+      <workItem from="1645512887659" duration="3437000" />
+      <workItem from="1645544743440" duration="566000" />
+      <workItem from="1645702971371" duration="6117000" />
+      <workItem from="1645867002737" duration="1653000" />
+      <workItem from="1645987684205" duration="4000000" />
+      <workItem from="1646307156005" duration="9354000" />
+      <workItem from="1646318964206" duration="9426000" />
+      <workItem from="1646385900354" duration="2183000" />
+      <workItem from="1646390741791" duration="7917000" />
+      <workItem from="1646478190271" duration="4130000" />
+      <workItem from="1646682478729" duration="3000" />
+      <workItem from="1646735526758" duration="45000" />
+      <workItem from="1646766656166" duration="1000" />
+      <workItem from="1646813526844" duration="5095000" />
+      <workItem from="1646840827068" duration="10446000" />
+      <workItem from="1646915242636" duration="876000" />
+      <workItem from="1646992233450" duration="14000" />
+      <workItem from="1647006165395" duration="595000" />
+      <workItem from="1647280969156" duration="643000" />
+      <workItem from="1647327025705" duration="1985000" />
+      <workItem from="1647332708225" duration="445000" />
+      <workItem from="1647333732268" duration="1093000" />
+      <workItem from="1647334990065" duration="109000" />
+      <workItem from="1647353478376" duration="943000" />
+      <workItem from="1647366753461" duration="2641000" />
+      <workItem from="1647371041376" duration="1104000" />
     </task>
     <task id="LOCAL-00001" summary="sending Files">
       <created>1642579583220</created>
@@ -167,7 +286,14 @@
       <option name="project" value="LOCAL" />
       <updated>1643196068483</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="premium User, repository functionalities don't work">
+      <created>1643452838168</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1643452838168</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -188,6 +314,11 @@
     <MESSAGE value="sending Files" />
     <MESSAGE value="premium User, repository functionalities doesn't work" />
     <MESSAGE value="premium User, repository functionalities don't work" />
-    <option name="LAST_COMMIT_MESSAGE" value="premium User, repository functionalities don't work" />
+    <MESSAGE value="demo launch" />
+    <option name="LAST_COMMIT_MESSAGE" value="demo launch" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

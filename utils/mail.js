@@ -3,11 +3,11 @@ const pug = require('pug');
 const htmlToText = require('html-to-text');
 
 module.exports = class Email {
-    constructor(user, url) {
+    constructor(user, url = "") {
         this.to = user.email;
         this.firstName = user.name.split(' ')[0];
         this.url = url;
-        this.from = `Jonas Schmedtmann <${process.env.EMAIL_FROM}>`;
+        this.from = `Land Tracker <${process.env.EMAIL_FROM}>`;
     }
 
     newTransport() {
@@ -26,10 +26,21 @@ module.exports = class Email {
             host: process.env.MAIL_HOST,
             port: process.env.MAIL_PORT,
             auth: {
-                user: process.env.MAIL_USERNAME,
+                user: process.env.MAIL_USER,
                 pass: process.env.MAIL_PASSWORD
             }
         });
+    }
+
+    async sendText(message, subject) {
+        const mailOptions = {
+            from: this.from,
+            to: this.to,
+            subject,
+            text: message
+        };
+
+        await this.newTransport().sendMail(mailOptions);
     }
 
     // Send the actual email

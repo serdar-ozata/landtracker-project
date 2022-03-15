@@ -13,17 +13,13 @@ router.get('/map', function (req, res, next) {
     res.status(201).sendFile(path.resolve(__dirname + '/../public/map.html'))
 });
 
-router.patch('/updatePassword', function (req, res, next) {
-    authController.updatePassword(req, res, next);
-});
+router.route("/").get(userController.showUserData)
 
-router.patch('/updateMe', function (req, res, next) {
-    userController.updateMe(req, res, next);
-});
+router.patch('/updatePassword', authController.updatePassword);
 
-router.put("/upgrade", function (req, res, next) {
-    premUserController.upgradeUser(req, res, next);
-});
+router.patch('/updateMe', userController.updateMe);
+
+router.put("/upgrade", premUserController.upgradeUser);
 router.route("/request/repository/:repoId").post(requestController.send);
 router.route("/request/:permId").delete(requestController.validateUser, requestController.delete);
 

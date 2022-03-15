@@ -9,6 +9,8 @@ const {promisify} = require("util");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 
+const REPOSITORY_LIMIT = 50;
+
 // Route or middleware functions
 exports.attachRepository = catchAsync(async function (req, res, next) {
     let token;
@@ -60,6 +62,13 @@ exports.authorizedMax = catchAsync(async function (req, res, next) {
         next(new AppError("You are not authorized for this action", 401))
 });
 
+exports.authorizedMaxLocals = catchAsync(async function (req, res, next) {
+    if (res.locals.authorizedMax)
+        next();
+    else
+        next(new AppError("You are not authorized for this action", 401))
+});
+
 exports.isOwner = catchAsync(async function (req, res, next) {
     if (req.repository.owner.toString() === req.user._id.toString())
         next();
@@ -79,6 +88,7 @@ exports.deleteRepository = catchAsync(async function (req, res, next) {
     await Promise.all(promises);
     await Asset.deleteMany({repos: req.repository._id});
     await req.repository.delete();
+    res.status(200).json({message:"success"});
 });
 
 exports.show = catchAsync(async function (req, res, next) {
@@ -97,18 +107,18 @@ exports.show = catchAsync(async function (req, res, next) {
 
 exports.getData = catchAsync(async function (req, res, next) {
     res.locals.repository = req.repository;
-    res.locals.authorizedMax = (!req.repository.limitOthersAuth && req.repository.canEdit.includes(req.user._id))
-        || req.repository.owner.toString() === req.user._id.toString();
+    res.locals.authorizedMax = (req.repository.owner.toString() === req.user._id.toString()
+        || !req.repository.limitOthersAuth && req.repository.canEdit.includes(req.user._id));
     await res.locals.repository.populate("canEdit canSee").execPopulate();
     res.locals.owner = await User.findById(res.locals.repository.owner).select("name email");
+    if (!res.locals.owner)
+        return next(new AppError("This repository is corrupted. Possible reasons: Owner deleted his account or banned", 400));
     const requestsRaw = await Request.find({to: req.repository._id});
     let promises = [];
     requestsRaw.map(request => {
         promises.push(request.populate("from").execPopulate());
     });
     res.locals.requests = await Promise.all(promises);
-    if (!res.locals.owner)
-        return next(new AppError("This repository is corrupted. Possible reasons: Owner deleted his account or banned", 400));
     res.render("repository_edit", {
         title: "Edit"
     });
@@ -124,8 +134,8 @@ exports.upgradeToEdit = catchAsync(async function (req, res, next) {
         user.canEdit.push(req.repository._id);
         req.repository.canEdit.push(req.params.userId);
         req.repository.canSee.pull(req.params.userId);
-        const pr = req.repository.update();
-        const pr2 = user.update();
+        const pr = req.repository.save();
+        const pr2 = user.save({validateModifiedOnly: true});
         await Promise.all([pr, pr2]);
         res.status(200).json({message: "success"});
     } else
@@ -139,8 +149,8 @@ exports.downgradeToView = catchAsync(async function (req, res, next) {
         req.repository.canEdit.pull(req.params.userId);
         user.canEdit.pull(req.params.userId);
         user.canSee.push(req.params.userId);
-        const pr = req.repository.update();
-        const pr2 = user.update();
+        const pr = req.repository.save();
+        const pr2 = user.save();
         await Promise.all([pr, pr2]);
         res.status(200).json({message: "success"});
     } else
@@ -156,9 +166,16 @@ exports.kickUser = catchAsync(async function (req, res, next) {
     await req.repository.save();
     res.status(200).json({message: "success"});
 });
-//TODO
 exports.makeAdmin = catchAsync(async function (req, res, next) {
-    res.status(501);
+    //res.status(501);
+    if(!req.repository.canEdit.includes(req.params.userId)){
+        return new AppError("This user cannot be upgraded!", 400);
+    }
+    req.repository.canEdit.push(req.repository.owner);
+    req.repository.owner = req.params.userId;
+    req.repository.canEdit.pull(req.params.userId);
+    await req.repository.save();
+    res.status(200).json({message:"success"});
 });
 
 // Unused
@@ -190,13 +207,14 @@ exports.updateSettings = catchAsync(async function (req, res, next) {
     res.status(200).json({message: "success"});
 });
 exports.updateHighSettings = catchAsync(async function (req, res, next) {
-    if (req.body.auth)
+    if (req.body.auth !== undefined)
         req.repository.limitOthersAuth = !req.body.auth;
     await req.repository.save();
     res.status(200).json({message: "success"});
 });
 
 exports.addNewRepository = catchAsync(async function (req, res, next) {
+    if(req.user.canEdit.length > REPOSITORY_LIMIT) return next(new AppError("Reached limit", 405));
     const repository = await exports.createRepository({
         name: req.body.name,
         description: req.body.description,
@@ -205,11 +223,27 @@ exports.addNewRepository = catchAsync(async function (req, res, next) {
     });
     if (repository) {
         req.user.canEdit.push(repository._id);
-        await req.user.save({validateBeforeSave:false});
-        res.status(200).json({message:"success"});
+        await req.user.save({validateBeforeSave: false});
+        res.status(200).json({message: "success"});
     } else {
         next(new AppError("Could not be able to create new repository", 500));
     }
+});
+
+exports.leave = catchAsync(async function (req, res, next) {
+    if (req.user._id.toString() === req.repository.owner.toString())
+        return new AppError("You cannot leave from your own repository.", 400);
+    if (req.user.canSee.includes(req.repository._id)) {
+        req.user.canSee.pull(req.repository._id);
+        req.repository.canSee.pull(req.user._id);
+    } else if (req.user.canEdit.includes(req.repository._id)) {
+        req.repository.canEdit.pull(req.user._id);
+        req.user.canEdit.pull(req.repository._id);
+    } else {
+        return new AppError("You are not in this repository", 400);
+    }
+    await Promise.all([req.user.save({validateBeforeSave: false}), req.repository.save({validateBeforeSave: false})])
+    res.status(200).json({});
 });
 
 // Other functions

@@ -1,0 +1,189 @@
+.iconActive {
+    filter: none;
+}
+
+.iconInactive:hover {
+    filter: none;
+}
+
+.iconInactive {
+    filter: brightness(0) saturate(100%) invert(80%) sepia(2%) saturate(29%) hue-rotate(317deg) brightness(92%) contrast(96%);
+}
+
+.icon-info {
+    filter: brightness(0%) invert(48%) sepia(75%) saturate(481%) hue-rotate(149deg) brightness(90%) contrast(89%);
+    max-height: 1.5rem;
+    width: auto;
+    display: inline;
+    margin-left: 0.5rem;
+}
+
+.navbar-main {
+    background-color: #ffffff !important;
+}
+
+.icon-nav {
+    margin-right: 0.7rem;
+
+}
+
+.search-bar {
+    background-color: #6aa84f;
+}
+
+body {
+    background-color: #eee;
+}
+
+.navbar-brand {
+    color: #6aa84f !important;
+}
+
+.card-login {
+    position: center;
+    margin: 3rem auto auto;
+    width: 40%;
+}
+
+.card-email-confirm{
+    position: center;
+    margin: 5% auto auto;
+    width: 90%;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.card-signup{
+    position: center;
+    margin: 3rem auto auto;
+    width: 60%;
+}
+
+.btn-navbar {
+    margin-right: 0.5rem;
+}
+
+.repos-data-text {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: auto;
+    margin-left: 0;
+    padding-left: 0;
+    justify-self: start;
+}
+
+.repos-icon {
+    max-width: 2rem;
+    min-width: 1.5rem;
+    height: auto;
+    justify-content: end;
+    margin-right: 0;
+    padding-right: 0;
+    /*filter: invert(36%) sepia(100%) saturate(2889%) hue-rotate(102deg) brightness(102%) contrast(103%);*/
+}
+
+.edit-icon {
+    max-width: 1.6rem;
+    min-width: 1.5rem;
+    height: auto;
+    justify-content: start;
+    margin-right: 0;
+    padding-right: 0;
+    display: inline-flex;
+}
+
+.floatingInput {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.user-header {
+    display: inline;
+    margin-left: 0;
+}
+
+.btn-edit-dropdown {
+    margin: 0 0.5rem 0.2rem 0 !important;
+}
+
+.repos-navbar {
+    border-style: solid none;
+    border-color: darkgrey;
+    border-width: 1px;
+}
+
+#search-input {
+    display: inline-flex !important;
+    width: 20rem;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.navbar-icon-list {
+    justify-items: end !important;
+}
+
+.card-col {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.create-fields {
+    margin: 0.4rem;
+}
+
+.user-info-card {
+    margin: 1rem 7% 1rem 7%;
+}
+
+.info-text-start {
+    margin-left: 1rem;
+}
+
+.info-text-end {
+    margin-right: 1rem;
+}
+
+.info-text {
+    margin: 0.5rem;
+}
+
+.card-item-count {
+    margin-left: 1rem;
+    display: inline-flex;
+}
+
+.col-edit-icon {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.user-settings-desc {
+    color: gray;
+}
+
+.custom-feedback {
+    display: none;
+    width: 100%;
+    margin-top: .25rem;
+    font-size: .875em;
+    color: #dc3545;
+}
+
+.custom-feedback-active {
+    display: inline;
+}
+
+.repos-card {
+    margin: 0.5rem auto auto;
+}
+
+#idCopyButton {
+    padding: 0.05rem;
+    margin: 0.22rem 0 0 0.5rem;
+    font-size: 0.6rem;
+    font-weight: bold;
+}

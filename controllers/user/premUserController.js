@@ -11,7 +11,10 @@ const userController = require("./userController");
 const User = require("../../models/userModel");
 exports.upgradeUser = catchAsync(async function (req, res, next) {
     let promises = [];
-    const repository = await repositoryController.createRepository(req.user._id);
+    const repository = await repositoryController.createRepository({
+        owner: req.user._id,
+        landCount: req.user.assets.length
+    });
     if (!repository)
         return next(new AppError("Unable the create repository, try again later", 500));
     req.user.assets.map(land => { // Error handler is not implemented
@@ -28,7 +31,7 @@ exports.upgradeUser = catchAsync(async function (req, res, next) {
             }], {}
         ));
     });
-    const user = await SimpleUser.findById(req.user._id).select("+password -_id");
+    const user = await SimpleUser.findById(req.user._id).select("+password");
     const results = await Promise.all(promises);
     await SimpleUser.findByIdAndDelete(req.user._id);
     const nUser = await PremUser.create([{
@@ -40,10 +43,9 @@ exports.upgradeUser = catchAsync(async function (req, res, next) {
         passwordResetToken: user.passwordResetToken,
         passwordResetExpires: user.passwordResetExpires,
         canSee: user.canSee,
-        canEdit: [repository._id]
+        canEdit: [repository._id],
+        _id: req.user._id
     }], {validateBeforeSave: false});
-    repository.owner = nUser._id;
-    repository.save();
     res.status(201).json({
         results,
         nUser
@@ -54,8 +56,10 @@ exports.addLand = catchAsync(async function (req, res, next) {
     const data = userController.createLandData(req.body, next);
     if (!data) return new AppError("No valid data has been sent by user", 400);
     data.repos = req.repos._id;
-    const land = await Asset.create(data);
-    res.status(200).json({land});
+    const land = Asset.create(data);
+    const pr = req.repos.changeLandCount(1);
+    const results = await Promise.all([land, pr]);
+    res.status(200).json({land: results[0]});
 });
 
 exports.deleteLand = catchAsync(async function (req, res, next) {

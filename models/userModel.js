@@ -6,12 +6,20 @@ const Request = require("./premium/requestModel");
 const Repository = require("./premium/assetRepositoryModel");
 const AppError = require("../utils/appError");
 // ALWAYS upgrade simple User to prem if you want to create a prem user
+
+const INVITE_LIMIT = 4;
+
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        maxLength: [25, "Please type a shorter name"],
+        maxLength: [30, "Please type a shorter name"],
         required: [true, 'Please tell us your name!'],
-        validate: [validator.isAlpha, "Your name should only contain letters"]
+        validate: {
+            validator: function (el) {
+                return validator.isAlphanumeric(el, 'en-US', {ignore: " -"}); //"tr-TR"
+            },
+            message: "Invalid Name"
+        }
     },
     email: {
         type: String,
@@ -44,18 +52,27 @@ const userSchema = new mongoose.Schema({
         }
     },
     passwordChangedAt: Date,
-    passwordResetToken: String,
-    passwordResetExpires: Date,
-    active: {
-        type: Boolean,
-        default: true,
-        //select: false
+    passwordResetToken: {
+        type: String,
+        index: true
     },
+    passwordResetExpires: Date,
     canSee: {
         type: [mongoose.Schema.ObjectId],
         ref: 'AssetRepository'
+    },
+    activated: {
+        type: Boolean,
+        default: false
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now()
+    },
+    confirmToken: {
+        type: String,
+        index: true
     }
-    //assets: [abstractAssetSchema]
 }, {discriminatorKey: "kind"});
 
 userSchema.methods.changedPasswordAfter = function (JWTTimeStamp) {
@@ -100,27 +117,55 @@ userSchema.methods.createPasswordResetToken = async function () {
         .createHash('sha256')
         .update(resetToken)
         .digest('hex');
-
-    console.log({resetToken}, this.passwordResetToken);
-
-    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+    this.passwordResetExpires = Date.now() + 100 * 60 * 1000; // 100 minutes
 
     return resetToken;
 };
 
-userSchema.methods.sendRequest = async function (repoId) {
+userSchema.methods.createConfirmationToken = async function () {
+    const token = crypto.randomBytes(32).toString('hex');
+
+    this.confirmToken = crypto
+        .createHash('sha256')
+        .update(token)
+        .digest('hex');
+    return token;
+}
+
+userSchema.methods.sendRequest = async function (repoId, message) {
     const repository = await Repository.findById(repoId);
     if (!repository)
         return new AppError("Invalid repository id", 400);
+
     switch (repository.privacy) {
         case "Public":
+            if (repository.canSee.includes(this._id) || repository.canEdit.includes(this._id))
+                return new AppError("Already in", 400);
+
             repository.canSee.push(this._id);
-            await repository.save();
+            this.canSee.push(repository._id);
+            await Promise.all([repository.save({validateBeforeSave: false}), this.save({validateBeforeSave: false})]);
             return "accepted"
         case "Invite":
+            const invites = await Request.find({from:this._id}).exec();
+            console.log(invites.length)
+            if(invites.length > INVITE_LIMIT)
+                return new AppError("Reached invite limit", 405);
+
+            for (let invite in invites) {
+                if(invite.to === repository._id)
+                    return new AppError("Sent before", 400);
+            }
+            // if (await Request.findOne({from: this._id, to: repository._id}))
+            //     return new AppError("Sent before", 400);
+
+            if (repository.canSee.includes(this._id) || repository.canEdit.includes(this._id))
+                return new AppError("Already in", 400);
+
             await Request.create({
                 to: repoId,
-                from: this._id
+                from: this._id,
+                message
             });
             return "pending";
         default:

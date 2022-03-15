@@ -6,7 +6,7 @@ function handleCastErrorDB(error) {
 
 function handleDuplicateErrorDB(error) {
     if(error.keyPattern["email"])
-        return new AppError("This email is already taken",400);
+        return new AppError("Email taken",400);
     return new AppError("Bad Request",400);
 }
 

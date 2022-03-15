@@ -1,0 +1,6 @@
+.card(style="margin-bottom:0.5rem")
+    .card-body
+        h5.card-title= `To ${request.to.name}`
+        h6.card-subtitle.mb-2.text-muted=request.to._id
+        p.card-text= request.message ? request.message : __("(Not Provided)")
+        button.btn.btn-secondary.request-cancel-btn(id=`rem${request._id}`)= __("Cancel")

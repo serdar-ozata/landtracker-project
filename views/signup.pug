@@ -1,0 +1,44 @@
+extends layout
+block content
+    main
+        .card.card-signup#signupCard
+            .card-header
+                h5 Sign up
+            .card-body
+                form#signupForm
+                    .form-group
+                        .form-floating.create-fields
+                            input#inEmail.form-control(type="email" autocomplete="false")
+                            label(for="inEmail")= __("Email")
+                            .custom-feedback= __("This is not a valid Email")
+                            .custom-feedback= __(" There is already an account with this email address")
+                        .form-floating.create-fields
+                        .form-floating.create-fields
+                            input#inName.form-control
+                            label(for="inName") Name
+                            .custom-feedback#nameEmptyFeed= __("Please provide a name")
+                            .custom-feedback#nameMaxFeed= __("Your name shouldn't exceed 30 characters")
+                            .custom-feedback#nameCharFeed= __("Only digits, letters and white spaces are allowed")
+                        .form-floating.create-fields
+                            input#inPass.form-control(type="password" autocomplete="new-password")
+                            label(for="inPass" ) Password")
+                            .custom-feedback#passEmptyFeed= __("Please provide a password")
+                            .custom-feedback#passMinFeed= __("Your password should include 8 or more characters")
+                            .custom-feedback#passMaxFeed= __("Your password shouldn't exceed 30 characters")
+                            .custom-feedback#passCharFeed= __("Your password should contain at least 1 number and 1 character")
+                            .custom-feedback#sameWithName= __("Please do not put your name also as a password")
+                        .form-floating.create-fields
+                            input#inPassConfirm.form-control(type="password" autocomplete="new-password")
+                            label(for="inPassConfirm")= __("Confirm Your Password")
+                            .invalid-feedback= __("Passwords don't match")
+                        button.btn.btn-secondary.create-fields#discardBtn(type="button", data-bs-dismiss="modal")= __("Discard")
+                        button.btn.btn-primary.create-fields#submitBtn(type="button")= __("Submit")
+        .modal.fade#sModal(tabindex="-1", aria-labelledby="sModalLabel", aria-hidden="true")
+            .modal-dialog.modal-dialog-centered
+                .modal-content
+                    .modal-header
+                        h5#sModalLabel.modal-title= __("One Last Step")
+                        button.btn-close(type="button", data-bs-dismiss="modal", aria-label="Close")
+                    .modal-body= __("We need you to confirm your email address. Just click the link in the email we sent you. After you're done, you will be able to log in.")
+                    .modal-footer
+                        button.btn.btn-secondary(type="button", data-bs-dismiss="modal")= __("Go to login page")

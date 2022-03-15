@@ -1,21 +1,21 @@
 header
-    nav.navbar.navbar-expand.navbar-light.bg-light
+    nav.navbar.navbar-expand.navbar-light.navbar-main
         .container-fluid.navbar-icon-list
-            a.navbar-brand(href="#") Land Tracker
+            a.navbar-brand(href="/") Land Tracker
             if user
                 ul.navbar-nav
                     li.nav-item.icon-nav
                         a(href="/repository")
-                            img(src="/svg/archive.svg",width="28rem", class={iconActive: url === "/repository"})
+                            img(src="/svg/folder.svg",width="28rem", class={iconActive: url === "/repository", iconInactive: url !== "/repository"})
                     li.nav-item.icon-nav
                         a(href="/user")
-                            img(src="/svg/user.svg",width="28rem", class={iconActive: url === "/user"})
-                    li.nav-item.icon-nav
-                        a(href="/logout")
+                            img(src="/svg/user.svg",width="28rem", class={iconActive: url === "/user", iconInactive: url !== "/user"})
+                    li.nav-item.icon-nav.iconInactive
+                        btn.btn.btn-link(style="margin:0; padding:0;")#logout-icon
                             img.icon-nav(src="/svg/signout.svg",width="28rem")
             else
                 ul.navbar-nav
-                    li.nav-item(class={active: url === "/login"})
-                        a.nav-link(href="/login") Log In
+                    li.nav-item.navbar-light(class={active: url === "/login"})
+                        a.nav-link(href="/login")=__("Log In")
                     li.nav-item(class={active: url === "/signup"})
-                        a.nav-link(href="/signup") Sign Up,
+                        a.nav-link(href="/signup")=__("Sign Up")

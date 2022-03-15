@@ -1,83 +1,99 @@
 import '@babel/polyfill';
-import {login, logout} from './login';
-import {reject, kick, accept, authorizeEdit, makeAdmin, deauthorize, save} from './repository_edit';
-import {search, createRepos, createRequest} from "./repository"
-import axios from "axios";
+import {activateLogin, logout, resetPassword, sendResetPassword} from './login';
+import {
+    save,
+    editMessage,
+    copyId, activateTTs, initWarningModal
+} from './repository_edit';
+import {search, createRepos, createRequest, leaveRepos, deleteRepos} from "./repository"
+import {changeName, changePassword, removeRequests, upgrade} from "./user_settings";
+import {signup} from "./signup";
 
 // DOM ELEMENTS
-const loginForm = document.querySelector('.card-login');
-const kickButtons = document.querySelectorAll(".kick-user");
-const rejectButtons = document.querySelectorAll(".btn-reject");
-const acceptButtons = document.querySelectorAll(".btn-accept");
-const authButtons = document.querySelectorAll(".btn-auth");
-const adminButtons = document.querySelectorAll(".btn-admin");
-const deauthButtons = document.querySelectorAll(".btn-deauth");
+export const language = document.getElementById("language").innerText;
+
+const loginForm = document.getElementById('loginCard');
+const signupForm = document.getElementById("signupCard");
+const forgotForm = document.getElementById("forgotForm");
+const resetPassForm = document.getElementById("resetPassForm");
+
 const saveButton = document.getElementById("saveSettings");
 const searchInput = document.getElementById("search-input");
 const disCreatebutton = document.getElementById("discardCreate");
 const createButton = document.getElementById("submitCreate");
 const requestButton = document.getElementById("submitRequest");
 const requestDiscardButton = document.getElementById("discardRequest");
-if (loginForm){
-    axios({
-        method: 'GET',
-        url: 'http://localhost:3000/loggedIn',
-    })
-        .then(res => {
-            window.location.assign("/repository")
-        })
-        .catch(err => {
-            console.log(err);
-            loginForm.addEventListener('submit', e => {
-                e.preventDefault();
-                const email = document.getElementById('LoginEmail').value;
-                const password = document.getElementById('LoginPassword').value;
-                login(email, password);
-            })
-        });
-}
 
-if(disCreatebutton){
+const nameDiscardButton = document.getElementById("nameDiscard");
+const nameSubmitButton = document.getElementById("nameSubmit");
+const upgradeSubmitButton = document.getElementById("upgradeSubmit");
+const upgradeDiscardButton = document.getElementById("upgradeDiscard");
+const passSubmitButton = document.getElementById("passSubmit");
+const passDiscardButton = document.getElementById("passDiscard");
+const requestCancelButtons = document.getElementsByClassName("request-cancel-btn");
+const idCopyButton = document.getElementById("idCopyButton");
+const logoutButton = document.getElementById("logout-icon");
+
+const warningModal = document.getElementById("warningModal")
+const requestMessageModal = document.getElementById('requestMessageModal');
+const leaveModal = document.getElementById("leaveModal");
+const deleteModal = document.getElementById("deleteModal");
+
+if (warningModal) {
+    initWarningModal(warningModal);
+}
+if (disCreatebutton) {
     createRepos(disCreatebutton, createButton);
 }
-if(requestButton){
+if (requestButton) {
     createRequest(requestButton, requestDiscardButton);
 }
-if (kickButtons) {
-    kickButtons.forEach((value, key) => {
-       kick(value);
-    });
-}
-if (rejectButtons) {
-    rejectButtons.forEach((value, key) => {
-        reject(value)
-    });
-}
 
-if(acceptButtons){
-    acceptButtons.forEach((value, key) => {
-        accept(value)
-    });
-}
-if(authButtons){
-    authButtons.forEach((value, key) => {
-        authorizeEdit(value)
-    });
-}
-if(adminButtons){
-    adminButtons.forEach((value, key) => {
-        makeAdmin(value)
-    });
-}
-if(deauthButtons){
-    deauthButtons.forEach((value, key) => {
-        deauthorize(value)
-    });
-}
-if(saveButton){
+if (saveButton) {
     save(saveButton);
 }
 
-if(searchInput){
+if (searchInput) {
     search(searchInput);
+}
+if (nameDiscardButton) {
+    changeName(nameDiscardButton, nameSubmitButton);
+    upgrade(upgradeDiscardButton, upgradeSubmitButton);
+}
+if (requestMessageModal) {
+    editMessage(requestMessageModal);
+}
+if (requestCancelButtons) {
+    removeRequests(requestCancelButtons);
+}
+if (idCopyButton) {
+    activateTTs();
+    copyId(idCopyButton);
+}
+if (passSubmitButton) {
+    changePassword(passDiscardButton, passSubmitButton);
+}
+
+if (leaveModal) {
+    leaveRepos(leaveModal);
+}
+if (deleteModal) {
+    deleteRepos(deleteModal);
+}
+if (loginForm) {
+    activateLogin(loginForm);
+}
+if (signupForm) {
+    signup(signupForm);
+}
+if (logoutButton) {
+    logout(logoutButton);
+}
+
+if (forgotForm) {
+    sendResetPassword(forgotForm);
+}
+
+if(resetPassForm){
+    resetPassword(resetPassForm);
 }
