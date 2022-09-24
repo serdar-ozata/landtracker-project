@@ -4,9 +4,12 @@ A website for managing assets. You  can:
 + specify the asset type and provide additional data about that asset type
 + use the repository system for better management
 + adjust your preferences
+
 Website link: https://landtracker.live/
 # Note
 This is not by any means a finished project. I'm not planning to finish it for now since It's not a commercial project a rather a hobby one.
+
+Bootstrap's CSS is included in custom.css file. That's the reason why the project looks like more than 50 percent of it is written with CSS.
 # Setup
 1. Fill the empty fields in config.env
 1. Replace the Mapbox token in /public/javascripts/assets.js with the token of your own
