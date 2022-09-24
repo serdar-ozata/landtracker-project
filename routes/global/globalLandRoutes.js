@@ -7,16 +7,15 @@ const cropRouter = require("../cropRoutes");
 const router = express.Router({mergeParams: true});
 
 
-router.route("/addLand")
-    .get(function (req, res, next) {
-        res.json(200).json({message: "Nothing to see here"});
-    })
+router.route("/")
     .post(repositoryController.authorizedEdit, premiumController.addLand);
 
 router.use("/:landId/crop", cropRouter);
+//router.route("/list").get(repositoryController.renderLandList);
 router.route("/:landId")
     .get(userController.attachLand, userController.showLand)
     .patch(repositoryController.authorizedEdit, userController.attachLand, userController.updateLand)
     .delete(repositoryController.authorizedEdit, premiumController.deleteLand);
+
 
 module.exports = router;

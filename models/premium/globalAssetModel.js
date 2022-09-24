@@ -3,13 +3,14 @@ const validator = require('validator');
 const farmSchema = require("../schemas/farmSchema");
 const landSchema = require("../schemas/landSchema");
 const realEstateSchema = require("../schemas/realEstateSchema");
+const modelController = require("../../controllers/modelController");
 
 const globalAssetSchema = new mongoose.Schema({
         repos: {
             type: mongoose.Schema.ObjectId,
-            required : true,
+            required: true,
             index: true,
-        } ,
+        },
         location: {
             type: {
                 type: String,
@@ -17,8 +18,15 @@ const globalAssetSchema = new mongoose.Schema({
                 enum: ["Point", "Polygon"]
             },
             coordinates: [Number],
-            address: String,
-            description: String
+        },
+        address: {
+            type: String,
+            maxlength: 100,
+            required: true,
+        },
+        description: {
+            type: String,
+            maxlength: 100,
         },
         name: {
             type: String,
@@ -30,18 +38,29 @@ const globalAssetSchema = new mongoose.Schema({
             default: "None"
         },
         value: {
-            Number,
+            type: Number,
             min: 0
         },
         currency: {
             type: String,
-            enum: ["Dollar", "Euro", "Turkish Lira"],
-            default: "Dollar"
+            enum: ["CAD", "EUR", "GBP", "JPY", "RMB", "TRY", "USD"],
+            default: "USD"
         },
         area: {
             type: Number,
             min: 0
+        },
+        color: {
+            type: String,
+            validate: {
+                validator: function (el) {
+                    return validator.isHexColor(el)
+                },
+                message: "Invalid Color"
+            },
         }
     },
     {discriminatorKey: 'kind'});
+globalAssetSchema.pre("save", modelController.validateAssetCords);
+
 module.exports = mongoose.model("Asset", globalAssetSchema);

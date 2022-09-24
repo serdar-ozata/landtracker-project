@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const cropSchema = new mongoose.Schema({
     plantedAt: {
         type: Date,
+        default: Date.now(),
         required: true,
     },
     harvestedAt: Date,

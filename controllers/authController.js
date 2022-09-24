@@ -79,7 +79,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
 
     if (!email || !password) {
-        return next(new AppError('Please provide email and password!', 400));
+        return next(new AppError('Please provide an email and a password!', 400));
     }
 
     const user = await User.findOne({email}).select('+password');
@@ -124,7 +124,7 @@ const checkToken = (async function (req) {
         token = req.cookies.jwt;
     }
     if (!token)
-        return new AppError("Please log in", 401);
+        return new AppError("EmptyToken", 401);
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
     if (!user)
@@ -186,11 +186,11 @@ exports.updatePassword = catchAsync(async function (req, res, next) {
     }
 });
 
-exports.saveLand = async function (req, res, next) {
+exports.saveLand = async function (req, res) {
     if (req.isLocal)
-        req.user.save({validateModifiedOnly: true});
+        await req.user.save({validateModifiedOnly: true});
     else
-        req.land.save({validateModifiedOnly: true});
+        await req.land.save({validateModifiedOnly: true});
 }
 
 exports.confirmEmail = catchAsync(async function (req, res, next) {

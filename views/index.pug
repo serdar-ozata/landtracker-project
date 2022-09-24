@@ -1,6 +1,24 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  div(style="margin-left:2rem; margin-right:2rem")
+    h5 Info:
+    p Please note that the site is not fully functional. You cannot actually view and edit your assets, the backend side of the asset requests is functional though. It's been uploaded so that I could show my work. Also, please use the website on desktop for now.
+    h5 What is this site about:
+    p Landtracker is a website that lets you manage your assets (Real Estate, Farm, Land) conveniently.
+    p Features:
+    li A world map to see your assets, you can also use a table (not in this demo).
+    li Repository system which allows multiple people to edit on or see the same repository. Try it out by copying one of the repositories' id then sending a request to that repository by another account.
+    li Simple UI to manage your account.
+    li Multiple account types. Upgrade your account for full functionality.
+    li Localization (uses 'accept-language' header which browsers set automatically)
+    h5 What you can do:
+    p Use one of the test{x}@example.com emails ({x} is a number between 1-15), the password is secretpass123. You cannot sign up because you will not be able to verify your email since we haven't bought a mail service which means we cannot send you a verification email.
+    p Test the repository and the request system. See how the validation works.
+    p You need to reload the page to see the effect of some of your actions.
+    p Authorization of the standard users is not allowed (They cannot edit a repository except their own). No prompt says you cannot do it but it won't work.
+    h5 Note:
+    p This demo only includes the parts that I made (Serdar Özata).
+      a(href="https://www.linkedin.com/in/serdar-%C3%B6zata-5451aa224/") Linkedn
   include _footer
+    //-normalize css for mozilla

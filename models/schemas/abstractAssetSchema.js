@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-
+const modelController = require("../../controllers/modelController");
 const abstractAssetSchema = new mongoose.Schema({
         location: {
             type: {
@@ -12,23 +12,32 @@ const abstractAssetSchema = new mongoose.Schema({
         },
         name: {
             type: String,
+            maxlength: 20,
+            minlength: 3,
             required: true,
             index: "text"
         },
-        address: String,
-        description: String,
+        address: {
+            type: String,
+            maxlength: 100,
+            required: true,
+        },
+        description: {
+            type: String,
+            maxlength: 100,
+        },
         group: {
             type: String,
             default: "None"
         },
         value: {
-            Number,
+            type: Number,
             min: 0
         },
         currency: {
             type: String,
-            enum: ["Dollar", "Euro", "Turkish Lira"],
-            default: "Dollar"
+            enum: ["CAD", "EUR", "GBP", "JPY", "RMB", "TRY", "USD"],
+            default: "USD"
         },
         area: {
             type: Number,
@@ -42,4 +51,7 @@ const abstractAssetSchema = new mongoose.Schema({
     }
     next();
 });*/
+
+
+abstractAssetSchema.pre("save", modelController.validateAssetCords);
 module.exports = abstractAssetSchema;

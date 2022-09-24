@@ -7,7 +7,7 @@ const abstractAssetSchema = require("../schemas/abstractAssetSchema");
 
 const assetReposSchema = new mongoose.Schema({
     landCount: {
-        type: "Number",
+        type: Number,
         default: 0
     },
     name: {

@@ -19,7 +19,7 @@ export const activateLogin = async (form) => {
                 try {
                     const res = await axios({
                         method: 'POST',
-                        url: 'http://localhost:3000/login',
+                        url: window.location.href,
                         data: {
                             email: email.value,
                             password: password.value
@@ -45,15 +45,15 @@ export const activateLogin = async (form) => {
         }
 
     };
+
     axios({
         method: 'GET',
-        url: 'http://localhost:3000/loggedIn',
+        url: `${window.location.origin}/loggedIn`,
     })
         .then(res => {
             window.location.assign("/repository")
         })
         .catch(err => {
-
             form.addEventListener('submit', e => {
                 e.preventDefault();
                 const email = document.getElementById('LoginEmail');
@@ -61,6 +61,7 @@ export const activateLogin = async (form) => {
                 login(email, password);
             })
         });
+
     activateEmailToast();
 }
 
@@ -77,8 +78,8 @@ export const logout = (button) => {
         axios({
             method: "POST",
             url: `${window.location.origin}/logout`
-        })
-        window.location.assign("/login");
+        }).then(ev =>window.location.assign("/login")).catch(e =>window.location.assign("/login"));
+
     });
 };
 

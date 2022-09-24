@@ -8,6 +8,7 @@ const {Promise} = require("mongoose");
 const {promisify} = require("util");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const convert = require("convert-units");
 
 const REPOSITORY_LIMIT = 50;
 
@@ -48,7 +49,7 @@ exports.attachRepository = catchAsync(async function (req, res, next) {
 });
 
 exports.authorizedEdit = catchAsync(async function (req, res, next) {
-    if (req.repository.canEdit.includes(req.user._id))
+    if (req.user._id.toString() === req.repository.owner.toString() || req.repository.canEdit.includes(req.user._id))
         next();
     else
         next(new AppError("You are not authorized for this action", 401))
@@ -88,7 +89,7 @@ exports.deleteRepository = catchAsync(async function (req, res, next) {
     await Promise.all(promises);
     await Asset.deleteMany({repos: req.repository._id});
     await req.repository.delete();
-    res.status(200).json({message:"success"});
+    res.status(200).json({message: "success"});
 });
 
 exports.show = catchAsync(async function (req, res, next) {
@@ -105,10 +106,9 @@ exports.show = catchAsync(async function (req, res, next) {
     }
 });
 
-exports.getData = catchAsync(async function (req, res, next) {
+exports.getRepositoryData = catchAsync(async function (req, res, next) {
     res.locals.repository = req.repository;
-    res.locals.authorizedMax = (req.repository.owner.toString() === req.user._id.toString()
-        || !req.repository.limitOthersAuth && req.repository.canEdit.includes(req.user._id));
+    res.locals.authorizedMax = isAuthorizedMax(req);
     await res.locals.repository.populate("canEdit canSee").execPopulate();
     res.locals.owner = await User.findById(res.locals.repository.owner).select("name email");
     if (!res.locals.owner)
@@ -119,8 +119,8 @@ exports.getData = catchAsync(async function (req, res, next) {
         promises.push(request.populate("from").execPopulate());
     });
     res.locals.requests = await Promise.all(promises);
-    res.render("repository_edit", {
-        title: "Edit"
+    res.render("repositoryEdit", {
+        title: "Edit",
     });
 });
 
@@ -147,10 +147,10 @@ exports.downgradeToView = catchAsync(async function (req, res, next) {
         const user = await User.findById(req.params.userId);
         req.repository.canSee.push(req.params.userId);
         req.repository.canEdit.pull(req.params.userId);
-        user.canEdit.pull(req.params.userId);
-        user.canSee.push(req.params.userId);
+        user.canEdit.pull(req.repository._id);
+        user.canSee.push(req.repository._id);
         const pr = req.repository.save();
-        const pr2 = user.save();
+        const pr2 = user.save({validateModifiedOnly: true});
         await Promise.all([pr, pr2]);
         res.status(200).json({message: "success"});
     } else
@@ -158,24 +158,31 @@ exports.downgradeToView = catchAsync(async function (req, res, next) {
 });
 
 exports.kickUser = catchAsync(async function (req, res, next) {
-    if (req.baseUrl.includes("edit")) {
+    const user = await User.findById(req.params.userId);
+    if (!user) return new AppError("Couldn't find the user", 404);
+    if (req.url.toString().includes("edit")) {
         req.repository.canEdit.pull(req.params.userId);
+        user.canEdit.pull(req.repository._id);
     } else {
         req.repository.canSee.pull(req.params.userId);
+        user.canSee.pull(req.repository._id);
     }
-    await req.repository.save();
+    const pr1 = req.repository.save();
+    const pr2 = user.save({validateModifiedOnly: true});
+    const result = await Promise.all([pr1, pr2]);
+
     res.status(200).json({message: "success"});
 });
 exports.makeAdmin = catchAsync(async function (req, res, next) {
     //res.status(501);
-    if(!req.repository.canEdit.includes(req.params.userId)){
+    if (!req.repository.canEdit.includes(req.params.userId)) {
         return new AppError("This user cannot be upgraded!", 400);
     }
     req.repository.canEdit.push(req.repository.owner);
     req.repository.owner = req.params.userId;
     req.repository.canEdit.pull(req.params.userId);
     await req.repository.save();
-    res.status(200).json({message:"success"});
+    res.status(200).json({message: "success"});
 });
 
 // Unused
@@ -214,7 +221,7 @@ exports.updateHighSettings = catchAsync(async function (req, res, next) {
 });
 
 exports.addNewRepository = catchAsync(async function (req, res, next) {
-    if(req.user.canEdit.length > REPOSITORY_LIMIT) return next(new AppError("Reached limit", 405));
+    if (req.user.canEdit.length > REPOSITORY_LIMIT) return next(new AppError("Reached the limit", 405));
     const repository = await exports.createRepository({
         name: req.body.name,
         description: req.body.description,
@@ -226,7 +233,7 @@ exports.addNewRepository = catchAsync(async function (req, res, next) {
         await req.user.save({validateBeforeSave: false});
         res.status(200).json({message: "success"});
     } else {
-        next(new AppError("Could not be able to create new repository", 500));
+        next(new AppError("Could not be able to create a new repository", 500));
     }
 });
 
@@ -246,6 +253,30 @@ exports.leave = catchAsync(async function (req, res, next) {
     res.status(200).json({});
 });
 
+exports.attachLocalLands = async function (req, res, next) {
+    res.locals.lands = await req.user.assets;
+    next();
+}
+
+exports.attachGlobalLands = catchAsync(async function (req, res, next) {
+    res.locals.authorizedMax = isAuthorizedMax(req);
+    res.locals.lands = await Asset.find().where("repos").equals(req.repository._id);
+    next();
+});
+
+exports.attachBaseUrl = function (req, res, next) {
+    res.locals.baseUrl = `/repository/${req.repository._id}/`
+    next();
+}
+
+exports.renderLandList = catchAsync(async function (req, res, next) {
+    res.render("assetList");
+});
+
+exports.renderMap = catchAsync(async function (req, res, next) {
+    res.render("map");
+});
+
 // Other functions
 exports.createRepository = async function (data) {
     try {
@@ -253,4 +284,19 @@ exports.createRepository = async function (data) {
     } catch (e) {
         return undefined;
     }
+}
+
+function isAuthorizedMax(req) {
+    return (req.repository.owner.toString() === req.user._id.toString()
+        || !req.repository.limitOthersAuth && req.repository.canEdit.includes(req.user._id));
+}
+
+// todo make async later
+exports.convertUnits = function (req, res, next) {
+    for (let i = 0; i < res.locals.lands.length; i++) {
+        const land = res.locals.lands[i];
+        if(land.area)
+            land.area = convert(land.area).from("m2").to(req.user.areaUnit);
+    }
+    next();
 }

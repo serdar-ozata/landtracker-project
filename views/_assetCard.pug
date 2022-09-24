@@ -1,0 +1,141 @@
+-const groupName = asset.group ? asset.group : "none";
+.accordion-item(groupname=groupName)
+    .accordion-header.d-flex.justify-content-between(id=`h${asset._id}`)
+        .accordion-text-container
+            h4.accordion-header-text= asset.name
+            h5.asset-kind.text-muted.accordion-header-text(kind=asset.kind)=__(asset.kind)
+        div
+            if authorizedMax
+                .btn-group(role="group" style="margin:0.7rem")
+                    button.btn.btn-outline-dark.dropdown-toggle(type="button", data-bs-toggle="dropdown", aria-expanded="false")= __("Other")
+                    ul.dropdown-menu(style="min-width:6rem;")
+                        if asset.kind === "Farm Land"
+                            li
+                                if asset.currentCrop
+                                    button.dropdown-item.move-cur-crop Move the current crop to previous crops
+                                else
+                                    button.dropdown-item.add-crop Add a crop
+                            li
+                                button.dropdown-item.add-prev-crop Add a previously cultivated crop
+                        li
+                            button.btn-danger.dropdown-item Delete
+                button.btn.btn-outline-success.disabled(type="button")= __("Save")
+                button.btn.btn-outline-primary.accordion-edit-btn.disabled(type="button")= __("Edit")
+            input.btn-check(id=`bt${asset._id}` type="checkbox", autocomplete="off" data-bs-toggle="collapse", data-bs-target=`#b${asset._id}`, aria-expanded="false", aria-controls=`#b${asset._id}`)
+            label.btn.btn-outline-primary(style="margin:0.7rem;" for=`bt${asset._id}` )=__("Expand")
+    .accordion-collapse.collapse(aria-labelledby=`#h${asset._id}` id=`b${asset._id}`)
+        hr(style="margin:0")
+        .accordion-body.bg-light
+            .row.row-cols-auto
+                .col.col-auto
+                    span= "Group: "
+                    if authorizedMax
+                        span.accordion-input-hide
+                        input.floatingInput.accordion-input(maxlength="20" value=groupName, field="group" disabled)
+                    else
+                        span= groupName
+                if asset.value > 0
+                    .col.col-auto
+                        span="Value: "
+                        if authorizedMax
+                            span.accordion-input-hide
+                            input.floatingInput.accordion-input(type="number" min= 0 value= asset.value field="value" disabled)
+                            select.floatingInput.accordion-input(value= asset.currency field="currency" disabled=true)
+                                option(value="CAD" selected= asset.currency === "CAD")="CAD"
+                                option(value="EUR" selected= asset.currency === "EUR")="EUR"
+                                option(value="GBP" selected= asset.currency === "GBP")="GBP"
+                                option(value="JPY" selected= asset.currency === "JPY")="JPY"
+                                option(value="RMB" selected= asset.currency === "RMB")="RMB"
+                                option(value="TRY" selected= asset.currency === "TRY")="TRY"
+                                option(value="USD" selected= asset.currency === "USD")="USD"
+                        else
+                            span= asset.value + " " + asset.currency
+                if asset.description
+                    .col.col-auto
+                        span= "Description: "
+                        if authorizedMax
+                            span.accordion-input-hide
+                            input.floatingInput.accordion-input(maxlength="100", type="text" value=asset.description field="description" disabled)
+                        else
+                            span= asset.description
+                if asset.area
+                    .col.col-auto
+                        span= "Area: "
+                        if authorizedMax
+                            span.accordion-input-hide
+                            input.floatingInput.accordion-input(maxlength="100", type="text" value=asset.area field="area" disabled)
+                        else
+                            span= asset.area
+                        if user.areaUnit[user.areaUnit.length - 1] === "2"
+                            span= " " + user.areaUnit.substring(0, user.areaUnit.length - 1)
+                                sup 2
+                        else
+                            span= " " + user.areaUnit
+                .col.col-auto
+                    span= "Address: "
+                    if authorizedMax
+                        span.accordion-input-hide
+                        input.floatingInput.accordion-input(maxlength="100", type="text", autocomplete="address" value=asset.address field="address" disabled)
+                    else
+                        span= asset.address
+                if asset.kind === "Real Estate"
+                    .col.col-auto
+                        span= "Type: "
+                        if authorizedMax
+                            span.accordion-input-hide
+                            input.floatingInput.accordion-input(type="text" value=asset.type field="type"  disabled)
+                        else
+                            span= asset.type
+                    .col.col-auto
+                        span= "Floor: "
+                        if authorizedMax
+                            span.accordion-input-hide
+                            input.floatingInput.accordion-input(type="number" value=asset.floor field="floor"  disabled)
+                        else
+                            span= asset.floor
+                if asset.kind === "Land"
+                    .col.col-auto
+                        span= "Used For: "
+                        if authorizedMax
+                            span.accordion-input-hide
+                            input.floatingInput.accordion-input(type="text" value=asset.usedFor field="usedFor"  disabled)
+                        else
+                            span= asset.usedFor
+            if asset.kind === "Farm Land"
+                if asset.currentCrop
+                    -const crop = asset.currentCrop
+                        hr.hr-asset
+                        .row.row-cols-auto.cur-crop-row
+                            .col.col-auto
+                                strong= __("Current Crop") + ":"
+                            .col.col-auto
+                                span= __("Name") + ": "
+                                span.accordion-input-hide
+                                input.floatingInput.accordion-input(type="text" value=crop.cropName field="currentCrop.cropName"  disabled)
+                            if crop.cost !== 0 && crop.cost
+                                .col.col-auto
+                                    span= __("Cost") + ": "
+                                    span.accordion-input-hide
+                                    input.floatingInput.accordion-input(type="text" value=crop.cost field="currentCrop.cost"  disabled)
+                                    span= ` (${asset.currency})`
+                            .col.col-auto
+                                span= __("Planted At") + ": "
+                                input.floatingInput.accordion-input.crop-date(type="date" in=crop.plantedAt field="currentCrop.plantedAt"  disabled)
+                if asset.previousCrops.length > 0
+                    hr.hr-asset
+                    .row
+                        strong Previous Crops:
+                    for crop in asset.previousCrops
+                        .row.row-cols-auto
+                            .col.col-auto
+                                span= __("Name") + ": " + crop.cropName
+                            .col.col-auto
+                                span= __("Planted At") + ": " + crop.plantedAt.toLocaleDateString(locale, { weekday:"long", year:"numeric", month:"short", day:"numeric"})
+                            .col.col-auto
+                                span= __("Harvested At") + ": " + crop.harvestedAt.toLocaleDateString(locale, { weekday:"long", year:"numeric", month:"short", day:"numeric"})
+                            if crop.cost
+                                .col.col-auto
+                                    span= __("Cost") + ": " + crop.cost
+                            if crop.revenue
+                                .col.col-auto
+                                    span= __("Revenue") + ": " + crop.revenue

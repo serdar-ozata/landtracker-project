@@ -16,7 +16,7 @@ block content
                             .col-3.info-text
                                 strong#name_field= user.name
                     .col-auto.info-text.info-text-end
-                        button.btn(style="padding:0" type="button", data-bs-toggle="modal", data-bs-target="#name-modal")= __("change your name")
+                        button.btn.setting-btn(type="button", data-bs-toggle="modal", data-bs-target="#name-modal")= __("change your name")
 
                 hr(style="margin:0")
                 .row.justify-content-start
@@ -36,7 +36,46 @@ block content
                                 strong#type_field= isPrem ? "Premium" : "Standard"
                     .col-auto.info-text.info-text-end
                         if !isPrem
-                            button.btn#upgrade-link(style="padding:0" type="button", data-bs-toggle="modal", data-bs-target="#upgrade-modal")= __("upgrade your account")
+                            button.btn.setting-btn#upgrade-link(type="button", data-bs-toggle="modal", data-bs-target="#upgrade-modal")= __("upgrade your account")
+        .nav.shadow-sm.user-info-card.bg-light
+            .container-fluid
+                .row
+                    .col-auto.info-text.info-text-start
+                        strong= __("Preferences")
+                hr(style="margin:0")
+                .row.justify-content-between
+                    .col-8.me-auto
+                        .row
+                            .col-3.info-text.info-text-start
+                                span= __("Area Unit")
+                            .col-8.info-text
+                                if user.areaUnit[user.areaUnit.length - 1] === "2"
+                                    strong#unitField= " " + user.areaUnit.substring(0, user.areaUnit.length - 1)
+                                        sup 2
+                                else
+                                    strong#unitField= " " + user.areaUnit
+                    .col-auto.info-text.info-text-end
+                        button.btn.setting-btn(type="button", data-bs-toggle="modal", data-bs-target="#area-unit-modal")= __("change the unit")
+                hr(style="margin:0")
+                .row.justify-content-between
+                    .col-8.me-auto
+                        .row
+                            .col-3.info-text.info-text-start
+                                span= __("Map Starting Point")
+                            .col-8.info-text
+                                strong#mapLocationField=__(user.mLocation)
+                    .col-auto.info-text.info-text-end
+                        button.btn.setting-btn(type="button", data-bs-toggle="modal", data-bs-target="#map-location-modal")= __("change the starting point")
+                hr(style="margin:0")
+                .row.justify-content-between
+                    .col-8.me-auto
+                        .row
+                            .col-3.info-text.info-text-start
+                                span= __("Map Initial Zoom Level")
+                            .col-8.info-text
+                                strong#mapZoomField= user.mZoom
+                    .col-auto.info-text.info-text-end
+                        button.btn.setting-btn(type="button", data-bs-toggle="modal", data-bs-target="#map-zoom-modal")= __("change the zoom level")
         .nav.shadow-sm.user-info-card.bg-light
             .container-fluid
                 .row
@@ -52,7 +91,7 @@ block content
                                 span.user-settings-desc= __("Last changed: ")
                                     span#pass-change-date= user.passwordChangedAt ? user.passwordChangedAt.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit", second:"2-digit"}) : "NA"
                     .col-auto.info-text.info-text-end
-                        button.btn(style="padding:0" type="button", data-bs-toggle="modal", data-bs-target="#pass-modal")= __("change your password")
+                        button.btn.setting-btn(type="button", data-bs-toggle="modal", data-bs-target="#pass-modal")= __("change your password")
                 hr(style="margin:0")
                 - reqCount = requests.length
                 .row.justify-content-between
@@ -68,8 +107,8 @@ block content
                                 else
                                     span.user-settings-desc= __mf("You have {amount} requests", {amount: requests.length})
                     .col-auto.info-text.info-text-end
-                        button.btn(style="padding:0" type="button", data-bs-toggle="modal", data-bs-target="#requests-modal")= __("manage your requests")
-        #name-modal.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-labelledby="staticBackdropLabel", aria-hidden="true")
+                        button.btn.setting-btn(type="button", data-bs-toggle="modal", data-bs-target="#requests-modal")= __("manage your requests")
+        #name-modal.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-hidden="true")
             .modal-dialog
                 .modal-content
                     .modal-header
@@ -86,7 +125,56 @@ block content
                     .modal-footer
                         button.btn.btn-secondary#nameDiscard(type="button", data-bs-dismiss="modal")= __("Discard")
                         button.btn.btn-primary.disabled#nameSubmit(type="button")= __("Save")
-        //- TODO
+        #area-unit-modal.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h5.modal-title= __("Change Your Unit Preference")
+                    .modal-body
+                        .row.g-2
+                            .col-md
+                                .form-floating.create-fields
+                                    select#inAreaUnit.form-select(aria-label="Unit")
+                                        option(value="m2" selected= user.areaUnit === "m2") m&sup2;
+                                        option(value="ha" selected= user.areaUnit === "ha") ha
+                                        option(value="km2" selected= user.areaUnit === "km2") km&sup2;
+                                        option(value="yd2" selected= user.areaUnit === "yd2") yd&sup2;
+                                        option(value="mi2" selected= user.areaUnit === "mi2") mi&sup2;
+                                    label(for="inAreaUnit")=__("Unit")
+                    .modal-footer
+                        button.btn.btn-secondary#areaDiscard(type="button", data-bs-dismiss="modal")= __("Discard")
+                        button.btn.btn-primary.disabled#areaSubmit(type="button")= __("Save")
+        #map-location-modal.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h5.modal-title= __("Change The Map's Initial Location")
+                    .modal-body
+                        .row.g-2
+                            .col-md
+                                .form-floating.create-fields
+                                    select#inLocation.form-select(aria-label="Location")
+                                        option(value="First" selected= user.mLocation === "First")=__("Location of the first asset")
+                                        option(value="Last" selected= user.mLocation === "Last")=__("Location of the last asset")
+                                        option(value="Center" selected= user.mLocation === "Center")=__("The Center Point of all Assets")
+                                    label(for="inAreaUnit")=__("Starting Point")
+                    .modal-footer
+                        button.btn.btn-secondary#locationDiscard(type="button", data-bs-dismiss="modal")= __("Discard")
+                        button.btn.btn-primary.disabled#locationSubmit(type="button")= __("Save")
+        #map-zoom-modal.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h5.modal-title= __("Change The Map's Initial Zoom Level")
+                    .modal-body
+                        .row.g-2
+                            .col-md
+                                .form-floating.create-fields
+                                    input.form-control#inZoom(value=user.mZoom  type="number", min=5 max=12)
+                                    label(for="inZoom")= __("Type a number between 5-12")
+                    .modal-footer
+                        button.btn.btn-secondary#zoomDiscard(type="button", data-bs-dismiss="modal")= __("Discard")
+                        button.btn.btn-primary.disabled#zoomSubmit(type="button")= __("Save")
         #pass-modal.modal.fade(data-bs-keyboard="true", tabindex="-1", aria-hidden="true" data-bs-backdrop="static")
             .modal-dialog
                 .modal-content
@@ -128,7 +216,8 @@ block content
                     .modal-body
                         .row.g-2
                             .col-md
-                                p= __("Your account is eligible for a 30-day trial. Click upgrade to start the process.")
+                                //p= __("Your account is eligible for a 30-day trial. Click upgrade to start the process.")
+                                p You can instantly upgrade your account in this demo.
                                 p= __("Note: It may take a while to upgrade your account.")
                     .modal-footer
                         button.btn.btn-secondary#upgradeDiscard(type="button", data-bs-dismiss="modal")= __("Discard")
@@ -145,7 +234,7 @@ block content
                         if requests.length === 0
                             .row.g-2
                                 .col-md
-                                        p= __("You don't have any requests")
+                                        p= __("You don't have any request")
                         else
                             for request in requests
                                 .row.g-2

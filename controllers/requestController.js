@@ -59,11 +59,8 @@ exports.accept = catchAsync(async function (req, res, next) {
         const pr = user.save({validateModifiedOnly: true});
         const pr2 = req.repository.save({validateModifiedOnly: true});
         const pr3 = req.request.delete();
-        await Promise.all([pr, pr2, pr3]);
-        res.status(200).json({
-            message: "accepted",
-            user
-        })
+        const result = await Promise.all([pr, pr2, pr3]);
+        res.status(200).json({message: "accepted"})
     } else {
         next(new AppError("This user no longer exists!", 400));
     }

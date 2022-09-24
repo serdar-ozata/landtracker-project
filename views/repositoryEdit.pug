@@ -85,24 +85,24 @@ block content
                                         h4.user-header.card-item-count= repository.canEdit.length
                                     .col.col-edit-icon
                                         img.edit-icon(src="/svgl/user-md.svg")
-                        button.btn.btn-outline-dark(type="button",style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseEdit", aria-expanded="false", aria-controls="collapseWidthExample")=__("Expand")
-            .card-body
-                -can_edit = true
-                div
-                    #collapseEdit.collapse
-                        .row
-                            .col
-                                ul.list-group.list-group-flush= __("Name")
-                            .col
-                                ul.list-group.list-group-flush= __("Email")
-                            .col
-                                ul.list-group.list-group-flush= __("Account Type")
-                            if isOwner
-                                .col-3
-                                    ul.list-group.list-group-flush= __("Actions")
-                        for iUser in repository.canEdit
-                            hr
-                            include _editUserBody
+                        if repository.canEdit.length > 0
+                            button.btn.btn-outline-dark(type="button",style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseEdit", aria-expanded="false", aria-controls="collapseWidthExample")=__("Expand")
+            if repository.canEdit.length > 0
+                #collapseEdit.collapse.card-body
+                    -can_edit = true
+                    .row
+                        .col
+                            ul.list-group.list-group-flush= __("Name")
+                        .col
+                            ul.list-group.list-group-flush= __("Email")
+                        .col
+                            ul.list-group.list-group-flush= __("Account Type")
+                        if isOwner
+                            .col-3
+                                ul.list-group.list-group-flush= __("Actions")
+                    for iUser in repository.canEdit
+                        hr
+                        include _editUserBody
         .card
             .card-header
                 .container-fluid
@@ -116,24 +116,24 @@ block content
                                         h4.user-header.card-item-count= repository.canSee.length
                                     .col.col-edit-icon
                                         img.edit-icon(src="/svgl/users-alt.svg")
-                        button.btn.btn-outline-dark(type="button" style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseSee", aria-expanded="false", aria-controls="collapseWidthExample")=__("Expand")
-            .card-body
-                -can_edit = false
-                div
-                    #collapseSee.collapse
-                        .row
-                            .col
-                                ul.list-group.list-group-flush=__("Name")
-                            .col
-                                ul.list-group.list-group-flush=__("Email")
-                            .col
-                                ul.list-group.list-group-flush=__("Account Type")
-                            if authorizedMax
-                                .col-3
-                                    ul.list-group.list-group-flush=__("Actions")
-                        for iUser in repository.canSee
-                            hr
-                            include _editUserBody
+                        if repository.canSee.length > 0
+                            button.btn.btn-outline-dark(type="button" style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseSee", aria-expanded="false", aria-controls="collapseWidthExample")=__("Expand")
+            if repository.canSee.length > 0
+                #collapseSee.collapse.card-body
+                    -can_edit = false
+                    .row
+                        .col
+                            ul.list-group.list-group-flush=__("Name")
+                        .col
+                            ul.list-group.list-group-flush=__("Email")
+                        .col
+                            ul.list-group.list-group-flush=__("Account Type")
+                        if authorizedMax
+                            .col-3
+                                ul.list-group.list-group-flush=__("Actions")
+                    for iUser in repository.canSee
+                        hr
+                        include _editUserBody
         if authorizedMax
             .card
                 .card-header
@@ -146,22 +146,22 @@ block content
                                     .row
                                         .col
                                             h4.user-header.card-item-count= requests.length
-                            button.btn.btn-outline-dark(type="button", style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseRequest", aria-expanded="false", aria-controls="collapseWidthExample")=__("Expand")
-                .card-body
-                    div
-                        #collapseRequest.collapse
-                            .row
-                                .col-3
-                                    ul.list-group.list-group-flush=__("Name")
-                                .col-3
-                                    ul.list-group.list-group-flush=__("Email")
-                                .col-3
-                                    ul.list-group.list-group-flush=__("Account Type")
-                                .col-3
-                                    ul.list-group.list-group-flush=__("Actions")
-                            for request in requests
-                                hr
-                                include _editRequestBody
+                            if requests.length > 0
+                                button.btn.btn-outline-dark(type="button", style= "margin-right:1.5rem", data-bs-toggle="collapse", data-bs-target="#collapseRequest", aria-expanded="false", aria-controls="collapseWidthExample")=__("Expand")
+                if requests.length > 0
+                    #collapseRequest.collapse.card-body
+                        .row
+                            .col-3
+                                ul.list-group.list-group-flush=__("Name")
+                            .col-3
+                                ul.list-group.list-group-flush=__("Email")
+                            .col-3
+                                ul.list-group.list-group-flush=__("Account Type")
+                            .col-3
+                                ul.list-group.list-group-flush=__("Actions")
+                        for request in requests
+                            hr
+                            include _editRequestBody
         #requestMessageModal.modal.fade(tabindex="-1", aria-labelledby="reqMessageLabel", aria-hidden="true")
             .modal-dialog
                 .modal-content

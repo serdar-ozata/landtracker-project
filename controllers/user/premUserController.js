@@ -44,7 +44,8 @@ exports.upgradeUser = catchAsync(async function (req, res, next) {
         passwordResetExpires: user.passwordResetExpires,
         canSee: user.canSee,
         canEdit: [repository._id],
-        _id: req.user._id
+        _id: req.user._id,
+        activated: true,
     }], {validateBeforeSave: false});
     res.status(201).json({
         results,
@@ -54,12 +55,12 @@ exports.upgradeUser = catchAsync(async function (req, res, next) {
 
 exports.addLand = catchAsync(async function (req, res, next) {
     const data = userController.createLandData(req.body, next);
-    if (!data) return new AppError("No valid data has been sent by user", 400);
-    data.repos = req.repos._id;
-    const land = Asset.create(data);
-    const pr = req.repos.changeLandCount(1);
-    const results = await Promise.all([land, pr]);
-    res.status(200).json({land: results[0]});
+    // if (!data) return new AppError("No valid data has been sent by user", 400);
+    if (!data) return
+    data.repos = req.repository._id;
+    const land = await Asset.create(data);
+    const pr = await req.repository.changeLandCount(1);
+    res.status(200).json({message: "Added"});
 });
 
 exports.deleteLand = catchAsync(async function (req, res, next) {

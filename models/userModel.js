@@ -72,7 +72,23 @@ const userSchema = new mongoose.Schema({
     confirmToken: {
         type: String,
         index: true
-    }
+    },
+    areaUnit: {
+        type: String,
+        enum: ["m2", "km2", "ha", "mi2", "yd2"],
+        default: "m2"
+    },
+    mZoom: {
+        type: Number,
+        min: 5,
+        max:12,
+        default: 9
+    },
+    mLocation: {
+        type: String,
+        enum: ["First", "Last", "Center"],
+        default: "First"
+    },
 }, {discriminatorKey: "kind"});
 
 userSchema.methods.changedPasswordAfter = function (JWTTimeStamp) {
@@ -147,13 +163,13 @@ userSchema.methods.sendRequest = async function (repoId, message) {
             await Promise.all([repository.save({validateBeforeSave: false}), this.save({validateBeforeSave: false})]);
             return "accepted"
         case "Invite":
-            const invites = await Request.find({from:this._id}).exec();
+            const invites = await Request.find({from: this._id}).exec();
             console.log(invites.length)
-            if(invites.length > INVITE_LIMIT)
+            if (invites.length > INVITE_LIMIT)
                 return new AppError("Reached invite limit", 405);
 
             for (let invite in invites) {
-                if(invite.to === repository._id)
+                if (invite.to === repository._id)
                     return new AppError("Sent before", 400);
             }
             // if (await Request.findOne({from: this._id, to: repository._id}))

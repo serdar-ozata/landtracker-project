@@ -1,32 +1,13 @@
 import axios from "axios";
 import isHexadecimal from "validator/lib/isHexadecimal"
 import {showError} from "./user_settings";
-import {language} from "./index";
+import {language, dictionary} from "./index";
 
 const toastSuccess = document.getElementById("toastSuccess");
 const toastMessage = document.getElementById("toast-message");
 const active = "custom-feedback-active";
 
-const dictionary = {
-    r_sent:{
-        tr: "İsteğiniz gönderildi.",
-        en:"Request sent successfully."
-    },
-    r_joined:{
-        tr: "Depoya katıldınız.",
-        en:"You have joined to the repository."
-    },
-    d_left:{
-        en: "You left",
-        tr: "Ayrıldığınız depo"
-    },
-    d_delete:{
-        en: "You deleted" ,
-        tr: "Sildiğiniz depo"
-    }
-}
-
-export const search = input => {
+export const repoSearch = input => {
     let repositories = new Map();
     document.querySelectorAll(".repos-card").forEach(card => {
         repositories.set(card.children[0].children[1].children[0].children[0].children[0].innerText.toLowerCase(), card);
@@ -80,7 +61,7 @@ export const createRequest = (createButton, discardButton) => {
             createButton.innerText = "Sending";
             axios({
                 method: 'POST',
-                url: `http://localhost:3000/user/request/repository/${repositoryId.value}`,
+                url: `${window.location.origin}/user/request/repository/${repositoryId.value}`,
                 data: {
                     message: repositoryMessage.value
                 }

@@ -1,0 +1,102 @@
+extends assetLayout
+block mapContent
+    ul.list-group
+        for asset in lands
+            include _assetCard
+    #deleteModal.modal.fade(data-bs-backdrop="static", tabindex="-1", aria-hidden="true")
+        .modal-dialog.modal-dialog-centered(role="document")
+            .modal-content.rounded-4.shadow
+                .modal-body.p-4.text-center
+                    div
+                        h5.mb-0=__("Are you sure about deleting this asset ?")
+                    p.mb-0=__("This action cannot be undone")
+                .modal-footer.flex-nowrap.p-0
+                    button.btn.btn-lg.btn-link.fs-6.text-decoration-none.col-6.m-0.rounded-0.border-right(type="button")
+                        strong=__("Yes")
+                    button.btn.btn-lg.btn-link.fs-6.text-decoration-none.col-6.m-0.rounded-0(type="button", data-bs-dismiss="modal")=__("No")
+    #create-prev-crop.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-hidden="true")
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h5.modal-title=__("Add a Harvested Crop")
+                .modal-body
+                    .row.g-2
+                        .col-md
+                            .form-floating.create-fields(autocomplete="off")
+                                input#inCropName.form-control(maxlength="20", type="text", autocomplete="off")
+                                label(for="inCropName")=__("Crop Name") + "*"
+                                .custom-feedback#cropEmptyFeed= __("Crop name should include at least 3 characters")
+                                .custom-feedback#cropMaxFeed= __("The name shouldn't exceed 25 characters")
+                                .custom-feedback#cropCharFeed= __("Only digits, letters and white spaces are allowed")
+                        .col-md
+                            .form-floating.create-fields
+                                input#inCropCost.form-control(type="number" min= 0 maxlength= 10)
+                                label#cropCostLabel(for="inCropCost")=__("Crop Cost")
+                        .col-md
+                            .form-floating.create-fields
+                                input#inCropRevenue.form-control(type="number" min= 0 maxlength= 10)
+                                label#cropRevenueLabel(for="inCropRevenue")=__("Crop Revenue")
+                    .row.g-2
+                        .col-md
+                            .form-floating.create-fields
+                                input#inCropPlanted.form-control(type="date")
+                                label(for="inCropPlanted")=__("Planted At") + "*"
+                                .custom-feedback= __("Please fill this field")
+                                .custom-feedback= __("Invalid date")
+                                .custom-feedback= __("It is impossible to harvest a crop before the crop even have been planted")
+                        .col-md
+                            .form-floating.create-fields
+                                input#inCropHarvested.form-control(type="date")
+                                label(for="inCropHarvested")=__("Harvested At") + "*"
+                                .custom-feedback= __("Please fill this field")
+                .modal-footer
+                    button.btn.btn-secondary#discardPrevCropCreate(type="button", data-bs-dismiss="modal")=__("Discard")
+                    button.btn.btn-primary#submitPrevCropCreate(type="button")=__("Add")
+    #move-current-crop.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-hidden="true")
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h5.modal-title=__("Add a Harvested Crop")
+                .modal-body
+                    .row.g-2
+                        .col-md
+                            .form-floating.create-fields
+                                input#inCurCropRevenue.form-control(type="number" min= 0 maxlength= 10)
+                                label(for="inCurCropRevenue")=__("Crop Revenue")
+                        .col-md
+                            .form-floating.create-fields
+                                input#inCurCropHarvested.form-control(type="date")
+                                label(for="inCurCropHarvested")=__("Harvested At") + "*"
+                                .custom-feedback= __("Please fill this field")
+                                .custom-feedback= __("It is impossible to harvest a crop before the crop even have been planted")
+                .modal-footer
+                    button.btn.btn-secondary#discardMoveCropCreate(type="button", data-bs-dismiss="modal")=__("Discard")
+                    button.btn.btn-primary#submitMoveCropCreate(type="button")=__("Move")
+    #create-crop.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-hidden="true")
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h5.modal-title=__("Add a Crop")
+                .modal-body
+                    .row.g-2
+                        .col-md
+                            .form-floating.create-fields(autocomplete="off")
+                                input#inCurCropName.form-control(maxlength="20", type="text", autocomplete="off")
+                                label(for="inCurCropName")=__("Crop Name") + "*"
+                                .custom-feedback= __("Crop name should include at least 3 characters")
+                                .custom-feedback= __("The name shouldn't exceed 25 characters")
+                                .custom-feedback= __("Only digits, letters and white spaces are allowed")
+                        .col-md
+                            .form-floating.create-fields
+                                input#inCurCropCost.form-control(type="number" min= 0 maxlength= 10)
+                                label(for="inCurCropCost")=__("Crop Cost")
+                    .row.g-2
+                        .col-md
+                            .form-floating.create-fields
+                                input#inCurCropPlanted.form-control(type="date")
+                                label(for="inCurCropPlanted")=__("Planted At") + "*"
+                                .custom-feedback= __("Please fill this field")
+                                .custom-feedback= __("Invalid date")
+                .modal-footer
+                    button.btn.btn-secondary#discardCurCropCreate(type="button", data-bs-dismiss="modal")=__("Discard")
+                    button.btn.btn-primary#submitCurCropCreate(type="button")=__("Add")

@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
 
 const realEstateSchema = new mongoose.Schema({
-    area: Number,
     floor: Number,
-    type: String
+    type: {
+        type: String,
+        maxlength: 20,
+        required: true
+    }
 });
 
 

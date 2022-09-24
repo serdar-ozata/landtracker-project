@@ -9,7 +9,7 @@ block content
                         button.btn.btn-outline-light.btn-sm(type="button", data-bs-toggle="modal", data-bs-target="#create-request", style="margin-left:1rem")=__("Send a request")
                     else
                         button.btn.btn-outline-light.btn-sm(type="button", data-bs-toggle="modal", data-bs-target="#create-request")=__("Send a request")
-
+                input.form-control.me-2.d-flex.btn-sm#repository-search-input(type="search", placeholder=__("Search"), aria-label="Search")
                 #create-repos.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-labelledby="staticBackdropLabel", aria-hidden="true")
                     .modal-dialog
                         .modal-content
@@ -68,14 +68,13 @@ block content
                                 button.btn.btn-primary.disabled#submitRequest(type="button")=__("Send")
 
 
-                input.form-control.me-2.d-flex.btn-sm#search-input(type="search", placeholder="Search", aria-label="Search")
         if user.kind === "Prem"
             for repository in user.canEdit
                 -isOwner = repository.owner.toString() === user._id.toString()
                 div.container.repos-card
                     .card.border-dark
                         .card-header
-                            a.btn.btn-outline-success.btn-navbar(role="button", href="/test")=__("View Data")
+                            a.btn.btn-outline-success.btn-navbar(role="button", href=`/repository/${repository._id}/`)=__("Open")
                             a.btn.btn-outline-info.btn-navbar(role="button", href=`/repository/${repository._id}/edit` )=__("Edit")
                             if isOwner
                                 button.btn.btn-outline-danger.btn-navbar.id-container(role="button" data-bs-id=repository._id data-bs-toggle="modal" data-bs-target="#deleteModal")=__("Delete")
@@ -83,24 +82,24 @@ block content
                             else
                                 button.btn.btn-outline-danger.btn-navbar.id-container(role="button" data-bs-id=repository._id data-bs-toggle="modal" data-bs-target="#leaveModal")=__("Leave")
                                 span.text-secondary(style="margin-left:1rem")=__("You can edit this repository")
-                        include _cardBody
+                        include _repositoryBody
         else
             div.container.repos-card
                 .card.border-dark
                     .card-header.justify-content-center
-                        a.btn.btn-outline-success.btn-navbar(role="button", href="/test")=__("View Data")
+                        a.btn.btn-outline-success.btn-navbar(role="button", href="/repository/local/")=__("Open")
                         span.text-secondary(style="margin-left:1rem")=__("You are the owner of this repository")
                     -repository = {name: "Local Repository", canSee:{length: 0}, canEdit:{length: 0}, landCount: user.assets.length || 0}
-                    include _cardBody
+                    include _repositoryBody
     for repository in user.canSee
         div.container.repos-card
             .card.border-dark
                 .card-header
-                    a.btn.btn-outline-success.btn-navbar(role="button", href="/test")=__("View Data")
+                    a.btn.btn-outline-success.btn-navbar(role="button", href=`/repository/${repository._id}/`)=__("Open")
                     a.btn.btn-outline-info.btn-navbar(role="button", href=`/repository/${repository._id}/edit`)=__("Edit")
                     button.btn.btn-outline-danger.btn-navbar.id-container(data-bs-id=repository._id data-bs-toggle="modal" data-bs-target="#leaveModal")=__("Leave")
                     span.text-secondary(style="margin-left:1rem")=__("You can only view this repository")
-                include _cardBody
+                include _repositoryBody
 
     .position-fixed.bottom-0.end-0.p-4(style="z-index: 11;" data-bs-delay="7000")
         .toast.align-items-center.text-white.bg-success.border-0#toastSuccess(role="alert", aria-live="assertive", aria-atomic="true")

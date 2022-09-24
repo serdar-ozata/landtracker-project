@@ -27,7 +27,7 @@ export const signup = (form) => {
     const passFeedbacks = pass.parentElement.getElementsByClassName(fbTag);
     const nameFeedbacks = name.parentElement.getElementsByClassName(fbTag);
     submitButton.addEventListener("click", ev => {
-        if (validateEmail() && validateName(name, nameFeedbacks) && validatePassword()) {
+        if (validateEmail() && validateName(name, name.parentElement, nameFeedbacks, 1, 30) && validatePassword()) {
             if (passConfirm.value === pass.value) {
                 submitButton.classList.add("disabled");
                 passConfirm.classList.remove("is-invalid");

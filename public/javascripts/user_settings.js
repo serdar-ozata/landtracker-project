@@ -1,49 +1,29 @@
 import axios from "axios";
 import isAlphanumeric from 'validator/lib/isAlphanumeric';
-import isStrongPassword from "validator/es/lib/isStrongPassword";
-import {language} from "./index";
+import {dictionary, language} from "./index";
 
-const active = "custom-feedback-active";
+export const active = "custom-feedback-active";
 const toastSuccess = document.getElementById("toastSuccess");
 const toastMessage = document.getElementById("toast-message");
 const toastError = document.getElementById("toastError");
 const toastErrorCode = document.getElementById("toast-err-code");
 const toastErrorMessage = document.getElementById("toast-err-message");
 
-const dictionary = {
-    def_err:{
-        tr: "İsteğin ile ilgili bir sıkıntı var. Lütfen daha sonra tekrar dene. Hata Kodu: ",
-        en: "There is something wrong in your request. Please try again later. Error Code: "
-    },
-    s_name:{
-        tr: "İsmin başarıyla değiştirildi.",
-        en: "Your name has been changed successfully!"
-    },
-    s_upgrade:{
-        tr: "Hesabın yükseltildi.",
-        en: "Your account has been upgraded. You are a premium user now!"
-    },
-    s_pass:{
-        tr: "Şifren başarıyla değiştirildi.",
-        en: "Your password has been successfully changed!"
-    }
-}
-
-const showSuccess = (message) => {
+exports.showSuccess = (message) => {
     toastMessage.innerText = message;
     const toast = new bootstrap.Toast(toastSuccess);
     toast.show()
 }
 
-export const validateName = (input, feedbacks) => {
+exports.validateName = (input, parent, feedbacks, minLength, maxLength) => {
     const val = input.value.trim();
-    const activeElement = input.parentElement.getElementsByClassName(active);
+    const activeElement = parent.getElementsByClassName(active);
     if (activeElement.length > 0) {
         activeElement[0].classList.remove(active);
     }
-    if (val.length === 0) {
+    if (val.length < minLength) {
         feedbacks[0].classList.add(active);
-    } else if (val.length > 30) {
+    } else if (val.length > maxLength) {
         feedbacks[1].classList.add(active);
     } else if (!isAlphanumeric(val, 'tr-TR', {ignore: " -"})) {
         feedbacks[2].classList.add(active);
@@ -60,46 +40,47 @@ export const validateName = (input, feedbacks) => {
 export const changeName = (discard, submit) => {
     const input = document.getElementById("inChangeName");
     const nameField = document.getElementById("name_field");
-    const feedbacks = input.parentElement.getElementsByClassName("custom-feedback");
-    input.addEventListener("input", function (ev) {
-        const value = ev.target.value.trim();
-        let length = value.length;
-        if (length > 1) {
-            submit.classList.remove("disabled");
-        } else {
-            submit.classList.add("disabled");
-        }
-    });
-    submit.addEventListener("click", ev => {
-        if (validateName(input, feedbacks)) {
-            submit.classList.add("disabled");
-            discard.classList.add("disabled");
-            submit.innerText = "Saving";
-            axios({
-                method: 'PATCH',
-                url: `http://localhost:3000/user/updateMe`,
-                data: {
-                    name: input.value
-                }
-            }).then(e => {
-                discard.classList.remove("disabled");
-                submit.innerText = "Send";
-                nameField.innerText = input.value;
-                discard.click();
-                showSuccess(dictionary.s_name[language]);
-            }).catch(e => {
-                discard.classList.remove("disabled");
-                submit.innerText = "Send";
-                discard.click();
-                showError(e.response.status);
-            })
-        }
-    });
-    discard.addEventListener("click", ev => {
-        submit.classList.remove("disabled");
-        input.value = "";
-        input.classList.remove("is-invalid", "is-valid");
-    });
+    updateUser(discard, submit, "name", input, nameField, () => input.value)
+    // const feedbacks = input.parentElement.getElementsByClassName("custom-feedback");
+    // input.addEventListener("input", function (ev) {
+    //     const value = ev.target.value.trim();
+    //     let length = value.length;
+    //     if (length > 1) {
+    //         submit.classList.remove("disabled");
+    //     } else {
+    //         submit.classList.add("disabled");
+    //     }
+    // });
+    // submit.addEventListener("click", ev => {
+    //     if (exports.validateName(input, input.parentElement, feedbacks, 1, 30)) {
+    //         submit.classList.add("disabled");
+    //         discard.classList.add("disabled");
+    //         submit.innerText = dictionary.b_saving[language];
+    //         axios({
+    //             method: 'PATCH',
+    //             url: `${window.location.origin}/user/updateMe`,
+    //             data: {
+    //                 name: input.value
+    //             }
+    //         }).then(e => {
+    //             discard.classList.remove("disabled");
+    //             submit.innerText = "Send";
+    //             nameField.innerText = input.value;
+    //             discard.click();
+    //             exports.showSuccess(dictionary.s_name[language]);
+    //         }).catch(e => {
+    //             discard.classList.remove("disabled");
+    //             submit.innerText = "Send";
+    //             discard.click();
+    //             showError(e.response.status);
+    //         })
+    //     }
+    // });
+    // discard.addEventListener("click", ev => {
+    //     submit.classList.remove("disabled");
+    //     input.value = "";
+    //     input.classList.remove("is-invalid", "is-valid");
+    // });
 
 }
 
@@ -108,20 +89,20 @@ export const upgrade = (discard, submit) => {
     submit.addEventListener("click", ev => {
         submit.classList.add("disabled");
         discard.classList.add("disabled");
-        submit.innerText = "Upgrading";
+        submit.innerText = dictionary.b_upgrading[language];
         axios({
             method: 'PUT',
-            url: `http://localhost:3000/user/upgrade`,
+            url: `${window.location.origin}/user/upgrade`,
         }).then(e => {
             discard.classList.remove("disabled");
-            submit.innerText = "Send";
+            submit.innerText = dictionary.b_send[language];
             typeField.innerText = "Premium"
             discard.click();
             document.getElementById("upgrade-link").remove();
-            showSuccess(dictionary.s_upgrade[language])
+            exports.showSuccess(dictionary.s_upgrade[language])
         }).catch(e => {
             discard.classList.remove("disabled");
-            submit.innerText = "Send";
+            submit.innerText = dictionary.b_send[language];
             discard.click();
             showError(e.response.status);
         })
@@ -145,10 +126,10 @@ export const changePassword = (discard, submit) => {
         if (validatePassForm()) {
             submit.classList.add("disabled");
             discard.classList.add("disabled");
-            submit.innerText = "Saving";
+            submit.innerText = dictionary.b_saving[language];
             axios({
                 method: 'PATCH',
-                url: `http://localhost:3000/user/updatePassword`,
+                url: `${window.location.origin}/user/updatePassword`,
                 data: {
                     oldPassword: oldPass.value,
                     password: pass.value,
@@ -156,9 +137,9 @@ export const changePassword = (discard, submit) => {
                 }
             }).then(e => {
                 discard.classList.remove("disabled");
-                submit.innerText = "Save";
+                submit.innerText = dictionary.b_save[language];
                 discard.click();
-                showSuccess(dictionary.s_pass[language]);
+                exports.showSuccess(dictionary.s_pass[language]);
             }).catch(e => {
                 if (e.response.status < 500) {
                     if (e.response.data.message === "Incorrect password") {
@@ -172,7 +153,7 @@ export const changePassword = (discard, submit) => {
                 }
                 discard.classList.remove("disabled");
                 submit.classList.remove("disabled");
-                submit.innerText = "Save";
+                submit.innerText = dictionary.b_save[language];
             })
         }
 
@@ -260,7 +241,7 @@ export const removeRequests = (cancelButtons) => {
             btn.innerText = "Canceling";
             axios({
                 method: "DELETE",
-                url: `http://localhost:3000/user/request/${btn.id.substring(3)}`
+                url: `${window.location.origin}/user/request/${btn.id.substring(3)}`
             }).then(r => {
                 btn.parentElement.parentElement.remove();
                 requestCounter.innerText = (requestCounter.innerText - 1).toString();
@@ -275,11 +256,71 @@ export const removeRequests = (cancelButtons) => {
     }
 };
 
-export const showError = (code, message=dictionary.def_err[language]
-                          , delay= 7) => {
-    toastErrorMessage.innerText = message;
-    toastErrorCode.innerText = code;
-    const toast = new bootstrap.Toast(toastError,{delay: delay * 1000});
+export const changeAreaPreference = (discard, submit) => {
+    const field = document.getElementById("unitField");
+    const input = document.getElementById("inAreaUnit");
+    updateUser(discard, submit, "areaUnit", input, field, () => input.children[input.selectedIndex].textContent)
+}
+export const changeLocationPreference = (discard, submit) => {
+    const field = document.getElementById("mapLocationField");
+    const input = document.getElementById("inLocation");
+    updateUser(discard, submit, "mLocation", input, field, () => input.value)
+}
+export const changeZoomPreference = (discard, submit) => {
+    const field = document.getElementById("mapZoomField");
+    const input = document.getElementById("inZoom");
+    updateUser(discard, submit, "mZoom", input, field, () => input.value, true);
+    let initialValue = input.value;
+    input.addEventListener("input", () => {
+        const val = input.value;
+        if (val === initialValue || val > 12 || val < 5) {
+            submit.classList.add("disabled");
+        } else
+            submit.classList.remove("disabled");
+    })
+}
+
+function updateUser(discard, submit, valueName, input, field, textUpdateFunc, customSubmitCheck = false) {
+    let initialValue = input.value;
+    if (!customSubmitCheck) {
+        input.addEventListener("input", () => {
+            if (input.value === initialValue) {
+                submit.classList.add("disabled");
+            } else
+                submit.classList.remove("disabled");
+        });
+    }
+    submit.addEventListener("click", () => {
+        submit.classList.add("disabled");
+        discard.classList.add("disabled");
+        const data = {};
+        data[valueName] = input.value;
+        submit.innerText = dictionary.b_saving[language];
+        axios({
+            method: 'PATCH',
+            url: `${window.location.origin}/user/updateMe`,
+            data
+        }).then(e => {
+            discard.classList.remove("disabled");
+            submit.innerText = dictionary.b_save[language];
+            field.innerText = textUpdateFunc();
+            discard.click();
+            exports.showSuccess(dictionary.s_a_unit[language]);
+            initialValue = input.value;
+        }).catch(e => {
+            discard.classList.remove("disabled");
+            submit.innerText = dictionary.b_save[language];
+            discard.click();
+            showError(e.response.status);
+        })
+    })
+}
+
+export const showError = (code, message = dictionary.def_err[language]
+    , delay = 7) => {
+    toastErrorMessage.innerText = message + code;
+    toastErrorCode.innerText = " ";
+    const toast = new bootstrap.Toast(toastError, {delay: delay * 1000});
 
     toast.show();
 }

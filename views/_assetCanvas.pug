@@ -1,0 +1,12 @@
+.row
+    hr.canvas-hr
+    .visually-hidden.asset-data= JSON.stringify(asset)
+    .col-4
+        span.canvas-text= asset.name
+    .col-4
+        strong.canvas-text= asset.group ? asset.group : "none"
+    .col-auto
+        btn.btn.btn-link.canvas-icon(style="margin:0; padding:0;")
+            img.icon-nav(src="/svg/file-alt.svg",width="28rem")
+        btn.btn.btn-link.canvas-icon(style="margin:0; padding:0;")
+            img.icon-nav(src="/svg/map-marker-alt.svg",width="28rem")

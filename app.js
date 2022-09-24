@@ -19,32 +19,32 @@ const appError = require("./utils/appError");
 const errorController = require("./controllers/errorController");
 const indexRouter = require('./routes/indexRoutes');
 const userRouter = require('./routes/userRoutes');
-const landRouter = require("./routes/local/localLandRoutes");
 const {log} = require("debug");
 const {sanitize} = require("express-mongo-sanitize");
 const repositoryRouter = require("./routes/repositoriesRoutes");
+const User = require("./models/userModel");
 
 const app = express();
 
 // Middlewares
 // helmet
-app.use(helmet());
+app.use(helmet({
+    crossOriginEmbedderPolicy: false,
+}));
 // Rate limiter
 const limiter = rateLimit({
     max: 5000,
-    windowMs: 60 * 60 * 1000, // 1 hour
+    windowMs: 30 * 60 * 1000, // 30 minutes
     message: "We received to many requests from you! Please try again after an hour."
 });
 app.use(limiter);
 
+console.log("launched on " + process.env.NODE_ENV + "mode")
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.use(express.static('public'));
-
-//TEMP
-const User = require("./models/userModel");
 
 mongoose.connect(process.env.DB_ADDRESS, {
     useNewUrlParser: true,
@@ -59,7 +59,10 @@ mongoose.connect(process.env.DB_ADDRESS, {
     //         await user.save({validateBeforeSave: false});
     //     })
     // });
-}).catch(err => console.log(err))
+}).catch(err => {
+    console.error("MongoDB Connection error")
+    console.log(err)
+})
 app.use(logger('dev'));
 //body parser
 app.use(express.json({limit: "10kb"}));
@@ -76,21 +79,16 @@ app.use(i18n.init);
 //serving static files
 const CSP = 'Content-Security-Policy';
 const POLICY =
-    //"default-src 'self' https://*.mapbox.com ;" +
-    "base-uri 'self';block-all-mixed-content;" +
     "font-src 'self' https: data:;" +
     "frame-ancestors 'self';" +
-    "img-src http://localhost:3000 'self' blob: data:;" +
-    "object-src 'none';" +
-    "script-src https: cdn.jsdelivr.net cdnjs.cloudflare.com api.mapbox.com 'self' blob: ;" +
-    "script-src-attr 'none';" +
-    //"style-src 'self' https: 'unsafe-inline';" +
-    'upgrade-insecure-requests;';
+    "img-src 'self' blob: data:;"
+
 app.use((req, res, next) => {
     res.setHeader(CSP, POLICY);
     next();
 });
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 
 app.use('/', indexRouter);

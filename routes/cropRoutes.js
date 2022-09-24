@@ -13,9 +13,6 @@ router.route("/current")
 
 
 router.route("/")
-    .get(function (req, res, next) {
-        res.json(200).json({message: "Nothing to see here"});
-    })
     .post(cropController.addCrop);
 
 router.route("/:cropId")

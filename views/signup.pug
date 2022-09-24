@@ -21,7 +21,7 @@ block content
                             .custom-feedback#nameCharFeed= __("Only digits, letters and white spaces are allowed")
                         .form-floating.create-fields
                             input#inPass.form-control(type="password" autocomplete="new-password")
-                            label(for="inPass" ) Password")
+                            label(for="inPass" )= __("Password")
                             .custom-feedback#passEmptyFeed= __("Please provide a password")
                             .custom-feedback#passMinFeed= __("Your password should include 8 or more characters")
                             .custom-feedback#passMaxFeed= __("Your password shouldn't exceed 30 characters")

@@ -1,0 +1,57 @@
+extends layout
+block content
+    nav.navbar.nav-scroller.shadow-sm.search-bar.py-2
+        .container-fluid
+            - const onMap = url.substring(url.length - 5).includes("map");
+                div
+                    if onMap
+                        button.btn.btn-outline-light.btn-sm.map-btn(type="button", data-bs-toggle="offcanvas", data-bs-target="#assetCanvas", aria-controls="assetCanvas") List
+                        button#assetAddButton.btn.btn-outline-light.btn-sm.map-btn(type="button")=__("Add")
+                ul.navbar-nav.list-group-horizontal
+                    if !onMap
+                        .input-group#searchGroup
+                            input.form-control#list-search-input(type="search", placeholder=__("Search"), aria-label="Search", maxlength="30")
+                            select.form-select
+                              option(selected) All
+                              option(value="1") Name
+                              option(value="2") Group
+                              option(value="3") Type
+
+
+                    li.nav-item
+                        a.nav-link.fw-bold(href=`${baseUrl}map/`, class={
+                    disabled: onMap,
+                    secondIconActive: !onMap,
+                    secondIconInactive: onMap,
+                }) Map
+                    li.nav-item
+                        a.nav-link.fw-bold(href=`${baseUrl}`, class={
+                    disabled: !onMap,
+                    secondIconActive: onMap,
+                    secondIconInactive: !onMap,
+                }) List
+                //    li.nav-item.icon-nav.sub-bar-icon
+                //        a(href=`${baseUrl}map`)
+                //            img(src="/svgl/map.svg",width="28rem", class={
+                //    secondIconActive: onMap,
+                //    secondIconinactive: !onMap
+                //})
+                //    li.nav-item.icon-nav.sub-bar-icon
+                //        a(href=`${baseUrl}`)
+                //            img(src="/svgl/list.svg",width="28rem", class={
+                //    secondIconActive: !onMap,
+                //    secondIconinactive: onMap
+                //})
+    block mapContent
+        h1 filler
+    .position-fixed.bottom-0.end-0.p-4(style="z-index: 11;" data-bs-delay="7000")
+        .toast.align-items-center.text-white.bg-success.border-0#toastSuccess(role="alert", aria-live="assertive", aria-atomic="true")
+            .d-flex
+                .toast-body#toast-message= __("Asset created successfully")
+                button.btn-close.btn-close-white.me-2.m-auto(type="button", data-bs-dismiss="toast", aria-label="Close")
+    .position-fixed.bottom-0.end-0.p-4(style="z-index: 11;" data-bs-delay="7000")
+        .toast.align-items-center.text-white.bg-danger.border-0#toastError(role="alert", aria-live="assertive", aria-atomic="true")
+            .d-flex
+                .toast-body#toast-err-message There is something wrong in your request. Please try again later. Error Code:
+                    span#toast-err-code 400
+                button.btn-close.btn-close-white.me-2.m-auto(type="button", data-bs-dismiss="toast", aria-label="Close")

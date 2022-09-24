@@ -8,7 +8,7 @@
                     .row.card-col
                         .col
                             img.repos-icon(src="/svgl/users-alt.svg")
-                        .col
+                        .col.text-col
                             if repository.canSee
                                 p.repos-data-text= repository.canSee.length.toString()
                             else
@@ -17,14 +17,14 @@
                     .row.card-col
                         .col
                             img.repos-icon(src="/svgl/user-md.svg" )
-                        .col
+                        .col.text-col
                             if repository.canEdit
                                 p.repos-data-text= (repository.canEdit.length + 1).toString()
                             else
                                 p.repos-data-text 1
                 .col
                     .row.card-col
-                        .col
+                        .col.text-col
                             img.repos-icon(src="/svgl/location-point.svg")
                         .col
                             p.repos-data-text= repository.landCount

@@ -23,6 +23,6 @@ router.put("/upgrade", premUserController.upgradeUser);
 router.route("/request/repository/:repoId").post(requestController.send);
 router.route("/request/:permId").delete(requestController.validateUser, requestController.delete);
 
-router.route("/repositories").get(userController.showRepositories);
+//router.route("/repositories").get(userController.showRepositories);
 
 module.exports = router;

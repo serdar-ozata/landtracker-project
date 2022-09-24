@@ -6,8 +6,38 @@
     filter: none;
 }
 
+.secondIconActive {
+    color: white;
+    font-weight: bolder;
+}
+
+.secondIconInactive:hover {
+    color: black !important;
+}
+
+.secondIconInactive {
+    color: black !important;
+}
+.setting-btn{
+    padding: 0;
+}
 .iconInactive {
     filter: brightness(0) saturate(100%) invert(80%) sepia(2%) saturate(29%) hue-rotate(317deg) brightness(92%) contrast(96%);
+}
+
+#map {
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 35rem;
+}
+
+.map-btn {
+    margin-right: 0.4rem;
+}
+
+.nav-item {
+    margin-right: 0.5rem;
 }
 
 .icon-info {
@@ -18,8 +48,16 @@
     margin-left: 0.5rem;
 }
 
+.second-bar-icon {
+    filter: brightness(100%);
+}
+
 .navbar-main {
     background-color: #ffffff !important;
+}
+
+#cropCurrencyGroup {
+    display: inline-flex;
 }
 
 .icon-nav {
@@ -42,10 +80,10 @@ body {
 .card-login {
     position: center;
     margin: 3rem auto auto;
-    width: 40%;
+    width: 50rem;
 }
 
-.card-email-confirm{
+.card-email-confirm {
     position: center;
     margin: 5% auto auto;
     width: 90%;
@@ -53,7 +91,7 @@ body {
     border-radius: 20px;
 }
 
-.card-signup{
+.card-signup {
     position: center;
     margin: 3rem auto auto;
     width: 60%;
@@ -63,6 +101,11 @@ body {
     margin-right: 0.5rem;
 }
 
+.accordion-text-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .repos-data-text {
     font-size: 1.3rem;
     font-weight: bold;
@@ -74,7 +117,7 @@ body {
 
 .repos-icon {
     max-width: 2rem;
-    min-width: 1.5rem;
+    min-width: 1rem;
     height: auto;
     justify-content: end;
     margin-right: 0;
@@ -82,6 +125,16 @@ body {
     /*filter: invert(36%) sepia(100%) saturate(2889%) hue-rotate(102deg) brightness(102%) contrast(103%);*/
 }
 
+#repository-search-input, #list-search-input {
+    width: 16rem;
+}
+#searchGroup{
+    margin-right: 1rem;
+}
+
+#searchGroup select{
+    width: 6rem;
+}
 .edit-icon {
     max-width: 1.6rem;
     min-width: 1.5rem;
@@ -96,6 +149,45 @@ body {
     border: none;
     margin: 0;
     padding: 0;
+}
+
+.accordion-header-text {
+    display: inline;
+    margin: 0.7rem;
+}
+
+.accordion-input,
+.accordion-input-hide {
+    font: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+.accordion-input::-webkit-outer-spin-button,
+.accordion-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+.accordion-input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.accordion-input {
+    border: none;
+    min-width: 10px;
+}
+
+.accordion-input:focus-visible {
+    outline: none;
+}
+
+.accordion-input-hide {
+    position: absolute;
+    height: 0;
+    overflow: hidden;
+    white-space: pre;
 }
 
 .user-header {
@@ -165,6 +257,15 @@ body {
     color: gray;
 }
 
+.accordion-edit-btn {
+    margin: 0.7rem 0rem 0.7rem 0.7rem;
+}
+
+.accordion-input {
+    background: transparent;
+    display: inline;
+}
+
 .custom-feedback {
     display: none;
     width: 100%;
@@ -173,8 +274,16 @@ body {
     color: #dc3545;
 }
 
+.canvas-text {
+}
+
 .custom-feedback-active {
     display: inline;
+}
+
+.canvas-hr {
+    color: gray;
+    margin-top: 0.6rem;
 }
 
 .repos-card {
@@ -186,4 +295,44 @@ body {
     margin: 0.22rem 0 0 0.5rem;
     font-size: 0.6rem;
     font-weight: bold;
+}
+
+.canvas-icon:hover {
+    filter: brightness(60%);
+}
+
+.hr-list {
+    color: gray;
+}
+.hr-asset{
+}
+
+.canvas-icon {
+    filter: none;
+}
+
+@media screen and (max-width: 850px) {
+    .card-login, .card-signup {
+        width: 85%;
+    }
+
+    .search-bar {
+        margin-top: 2px;
+    }
+}
+
+@media screen and (max-width: 850px) {
+    .repos-card {
+        width: 100%;
+    }
+
+    .repos-icon {
+        margin-left: 0;
+        padding: 0;
+    }
+
+    .text-col {
+        text-align: center;
+        font-min-size: 0.4rem;
+    }
 }

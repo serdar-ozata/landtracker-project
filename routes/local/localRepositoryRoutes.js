@@ -10,8 +10,8 @@ router.use(function (req, res, next) {
 });
 
 //router.route("/edit").get(repositoryController.getDataLocal)
-
 router.use("/lands", landRouter);
+router.get("/", repositoryController.attachLocalLands, repositoryController.renderLandList);
 
 
 module.exports = router;

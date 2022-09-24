@@ -1,56 +1,9 @@
 import axios from 'axios';
-import {language} from "./index";
+import {language, dictionary} from "./index";
 
 
 const url = window.location.href.substring(0, window.location.href.length - 5);
 
-const dictionary = {
-    c_tt_init:{
-        tr: "Panoya kopyala",
-        en: "Copy to clipboard"
-    },
-    c_tt_done:{
-        tr: "Kopyalandı",
-        en: "Copied"
-    },
-    u_upgrade_1:{
-        en: "Are you sure about allowing the user",
-        tr: ""
-    },
-    u_upgrade_2:{
-        en: "to edit this repository?",
-        tr: "adlı kullanıcısına depoyu düzenleme yetkisi vermek istediğinize emin misiniz?"
-    },
-    u_kick_1:{
-        en:"Are you sure about kicking",
-        tr: ""
-    },
-    u_kick_2:{
-        en: "",
-        tr: "adlı kullanıcıyı atmak istediğinizden emin misiniz?"
-    },
-    u_admin_1:{
-        en: "Are you sure about making the user",
-        tr: ""
-    },
-    u_admin_2:{
-        en: "admin? This means you will no longer be the owner of this repository.",
-        tr: "adlı kullancıyı yönetici yapmak istediğinize emin misiniz? Bu ayrıca sizi yöneticilikten düşürücektir."
-    },
-    u_deauth_1:{
-        en: "Are you sure about deauthorizing the user",
-        tr: ""
-    },
-    u_deauth_2:{
-        en: "?",
-        tr: "adlı kullanıcının düzenleme yetkisini almak istediğinize emin misiniz?"
-    },
-    r_message:{
-        en: "s message",
-        tr: "nın mesajı"
-    }
-
-}
 
 export const initWarningModal = (modal) => {
     let warningModal = modal;
@@ -73,6 +26,7 @@ export const initWarningModal = (modal) => {
         }).then(ev => {
             confirmButton.classList.remove("disabled");
             confirmButton.parentElement.children[1].click();
+            setTimeout(ev =>{location.reload()}, 100);
         });
         confirmButton.classList.add("disabled");
     });
@@ -92,8 +46,8 @@ export const initWarningModal = (modal) => {
             axios({
                 method: 'DELETE',
                 url: `${url}/permission/${button.id.substring(6)}`,
-            })
-        });
+            }).then(e => location.reload()); // temp then
+        })
     }
 
     const accept = (button) => {
@@ -101,7 +55,7 @@ export const initWarningModal = (modal) => {
             axios({
                 method: 'POST',
                 url: `${url}/permission/${button.id.substring(10)}`,
-            })
+            }).then(e => location.reload()).catch(e=> location.reload());
         });
     }
 
@@ -112,8 +66,8 @@ export const initWarningModal = (modal) => {
             //     url: `${url.substring(0, url.length - 5)}/user/${button.id.substring(4)}`,
             // })
             confirm("DELETE", `user/${button.getAttribute("data-bs-id")}`,
-                `${dictionary.u_kick_1} ${getName(button)} ${dictionary.u_kick_2}`, true);
-        });
+                `${dictionary.u_kick_1[language]} ${getName(button)} ${dictionary.u_kick_2[language]}`, true);
+        })
     }
     const authorizeEdit = (button) => {
         button.addEventListener("click", (evt) => {
@@ -122,7 +76,7 @@ export const initWarningModal = (modal) => {
             //     url: `${url.substring(0, url.length - 5)}/user/${button.id.substring(4)}`,
             // })
             confirm("POST", `user/${button.getAttribute("data-bs-id")}/std`,
-                `${dictionary.u_upgrade_1[dictionary]} ${getName(button)} ${dictionary.u_upgrade_2[language]}`);
+                `${dictionary.u_upgrade_1[language]} ${getName(button)} ${dictionary.u_upgrade_2[language]}`);
         });
     };
 
@@ -320,7 +274,7 @@ export const copyId = (btn) => {
             tooltip.hide();
             manual = true;
             btn.setAttribute("data-bs-original-title", dictionary.c_tt_done[language])
-        })
+        }).then(e => console.log("success")).catch(e => console.log("couldn't copy"))
     });
     btn.addEventListener("mouseover", ev => {
         tooltip.show();

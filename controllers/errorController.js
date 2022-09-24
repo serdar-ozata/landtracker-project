@@ -31,6 +31,10 @@ module.exports =  function (err, req, res, next) {
     else if(err.code === 11000) err = handleDuplicateErrorDB(err);
     if(err.name === "JsonWebTokenError") err = handleJsonWebTokenError(err);
     if(err.name === "TokenExpiredError") err = handleTokenExpiredError(err);
+
+    // Redirects to login page
+    if(err.message === "EmptyToken") return res.redirect("/login", 401);
+
     if(err.isOperational)
         res.status(err.statusCode).json({status: err.status, message: err.message});
     else{

@@ -4,22 +4,30 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('landtracker:server');
-var http = require('http');
+const app = require('../app');
+const debug = require('debug')('landtracker:server');
+const http = require('http'); //won't be used in future
+const fs = require("fs");
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * Create HTTPS server.
  */
 
-var server = http.createServer(app);
+// const options = {
+//     key: fs.readFileSync('./keys/key.pem'),
+//     cert: fs.readFileSync('./keys/cert.pem'),
+//     passphrase: "iamarobot"
+// };
+
+//const server = https.createServer(options, app);
+const server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.

@@ -1,0 +1,194 @@
+extends assetLayout
+block mapContent
+    #create-asset.modal.fade(data-bs-backdrop="static", data-bs-keyboard="false", tabindex="-1", aria-labelledby="staticBackdropLabel", aria-hidden="true")
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h5.modal-title=__("Create a new Asset")
+                .modal-body
+                    .row.g-2
+                        .btn-group(role="group", aria-label="Asset Type" style="margin: auto;")
+                            input#radioFarm.btn-check(type="radio", autocomplete="off", checked name="btnradio")
+                            label.btn.btn-outline-primary(for="radioFarm") Farm Land
+                            input#radioRealEstate.btn-check(type="radio",, autocomplete="off", name="btnradio")
+                            label.btn.btn-outline-primary(for="radioRealEstate") Real Estate
+                            input#radioLand.btn-check(type="radio", autocomplete="off" name="btnradio")
+                            label.btn.btn-outline-primary(for="radioLand") Land
+                    .row.g-2
+                        .col-md
+                            .form-floating.create-fields(autocomplete="off")
+                                input#inName.form-control(maxlength="20", type="text", autocomplete="off")
+                                label(for="inName")=__("Name") + "*"
+                            .custom-feedback#nameEmptyFeed= __("Name should include at least 3 characters")
+                            .custom-feedback#nameMaxFeed= __("The name shouldn't exceed 30 characters")
+                            .custom-feedback#nameCharFeed= __("Only digits, letters and white spaces are allowed")
+                        .col-md
+                            .form-floating.create-fields
+                                input#inGroup.form-control(maxlength="20", autocomplete="off")
+                                label(for="inGroup")=__("Group")
+                    .row.g-2
+                        .col-md
+                            .form-floating.create-fields
+                                input#inDesc.form-control(maxlength="100", type="text", autocomplete="off")
+                                label(for="inDesc")=__("Description")
+                    .row.g-2
+                        .col-md
+                            .form-floating.create-fields
+                                input#inAddress.form-control(maxlength="100", type="text", autocomplete="address")
+                                label(for="inAddress")=__("Address") + "*"
+                            .custom-feedback= __("Address should include at least 3 characters")
+                            .custom-feedback= __("The Address shouldn't exceed 100 characters")
+                    .row.g-2
+                        .col-md
+                            .form-floating.create-fields
+                                input#inPrice.form-control(type="number" min= 0)
+                                label(for="inPrice")=__("Value")
+                        .col-md
+                            .form-floating.create-fields
+                                select#inCurrency.form-select(aria-label="Currency")
+                                    option(value="CAD")="CAD"
+                                    option(value="EUR")="EUR"
+                                    option(value="GBP")="GBP"
+                                    option(value="JPY")="JPY"
+                                    option(value="RMB")="RMB"
+                                    option(value="TRY")="TRY"
+                                    option(value="USD" selected)="USD"
+                                label(for="inCurrency")=__("Currency")
+                    .row.g-2
+                        .col-md
+                            .form-floating.create-fields
+                                input#inArea.form-control(type="number" min= 0 maxlength=9)
+                                label(for="inArea")=__("Area")
+                        .col-md
+                            .form-floating.create-fields
+                                select#inAreaUnit.form-select(aria-label="Unit")
+                                    option(value="m2" selected) m&sup2;
+                                    option(value="ha") ha
+                                    option(value="km2") km&sup2;
+                                    option(value="yd2") yd&sup2;
+                                    option(value="mi2") mi&sup2;
+                                label(for="inAreaUnit")=__("Unit")
+                    #collapseFarm.collapse
+                        .row.g-2
+                            .col-md
+                                .form-check.create-fields
+                                    input#cropCheck.form-check-input(type="checkbox")
+                                    label.form-check-label(for="cropCheck") Farm Cultivated
+                        .row.g-2
+                            .col-md
+                                .form-floating.create-fields(autocomplete="off")
+                                    input#inCropName.form-control(maxlength="20", type="text", autocomplete="off")
+                                    label(for="inCropName")=__("Crop Name") + "*"
+                                .custom-feedback#cropEmptyFeed= __("Crop name should include at least 3 characters")
+                                .custom-feedback#cropMaxFeed= __("The name shouldn't exceed 25 characters")
+                                .custom-feedback#cropCharFeed= __("Only digits, letters and white spaces are allowed")
+                            .col-md
+                                .form-floating.create-fields
+                                    input#inCropCost.form-control(type="number" min= 0 maxlength= 10)
+                                    label#cropCostLabel(for="inCropCost")=__("Crop Cost")
+                        .row.g-2
+                            .col-md
+                                .form-floating.create-fields
+                                    input#inCropPlanted.form-control(type="date")
+                                    label(for="inCropPlanted")=__("Planted At")
+                    #collapseRealEstate.collapse.row.g-2
+                        .col-md
+                            .form-floating.create-fields(autocomplete="off")
+                                input#inEstateType.form-control(maxlength="20", type="text", autocomplete="off")
+                                label(for="inEstateType")=__("Real Estate Type") + "*"
+                        .col-md
+                            .form-floating.create-fields
+                                input#inFloor.form-control(maxlength="20", autocomplete="off", type="number")
+                                label(for="inFloor")=__("Floor")
+                    #collapseLand.collapse.row.g-2
+                        .col-md
+                            .form-floating.create-fields
+                                input#inUsedFor.form-control(maxlength="100", type="text", autocomplete="off")
+                                label(for="inUsedFor")=__("Used For")
+                    //.row.g-2
+                    //    .col-md=__("(*) denotes the fields that have to be filled")
+                .modal-footer
+                    button.btn.btn-secondary#discardAssetCreate(type="button", data-bs-dismiss="modal")=__("Discard")
+                    button.btn.btn-primary#submitAssetCreate(type="button")=__("Add")
+    #map(zoom= user.mZoom, location=user.mLocation)
+    #assetCanvas.offcanvas.offcanvas-start(data-bs-scroll="true", data-bs-backdrop="false", tabindex="-1", aria-labelledby="assetCanvasScrollingLabel")
+        .offcanvas-header.shadow-sm
+            input.form-control.me-2.d-flex.btn-sm#map-search-input(type="search", placeholder=__("Search Group, Asset Type or Name"), aria-label="Search")
+            button.btn-close(type="button", data-bs-dismiss="offcanvas", aria-label="Close")
+        .offcanvas-body.container-fluid
+            .row
+                h5 Assets
+            for asset in lands
+                include _assetCanvas
+    .position-fixed.end-0.p-4.top-50(style="z-index: 11;" data-bs-delay="-1")
+        .toast.align-items-center#toastAssetAdd(role="alert", aria-live="assertive", aria-atomic="true")
+            .toast-header.bg-dark.text-light
+                strong Add New Asset
+                button.btn-close.me-2.m-auto.btn-close-white(type="button", data-bs-dismiss="toast", aria-label="Close")
+            .toast-body.bg-white#toast-message
+                ul.list-group.list-group-flush
+                    li.list-group-item
+                        .row.align-items-center
+                            .col
+                                label.col-form-label(for="inColor") Color
+                            .col
+                                input#inColor.form-control(type="color")
+                    li.list-group-item Select a point from the map to continue
+                .mt-2.pt-2.border-top
+                    button.btn.btn-outline-secondary.btn-sm(type="button" data-bs-toggle="modal", data-bs-target="#create-asset") Continue
+    #assetInfoModal.modal.fade(tabindex="-1", aria-hidden="true")
+        .modal-dialog.modal-lg
+            .modal-content
+                .modal-header
+                    h3.modal-title Asset
+                    button.btn-close(type="button", data-bs-dismiss="modal", aria-label="Close")
+                .modal-body
+                    .row.g-2
+                        .col-md
+                            strong= __("Type") + ": "
+                            span
+                        .col-md
+                            strong= __("Group") + ": "
+                            span
+                    .row.g-2
+                        hr.hr-list
+                        .col-md
+                            strong= __("Description") + ": "
+                            span
+                    .row.g-2
+                        hr.hr-list
+                        .col-md
+                            strong= __("Address") + ": "
+                            span
+                    .row.g-2
+                        hr.hr-list
+                        .col-md
+                            strong= __("Price") + ": "
+                            span
+                        .col-md
+                            strong= __("Area") + ": "
+                            span
+                    .row.g-2
+                        hr.hr-list
+                        .col-md
+                            strong= __("Used For") + ": "
+                            span
+                    .row.g-2
+                        hr.hr-list
+                        .col-md
+                            strong= __("Type") + ": "
+                            span
+                        .col-md
+                            strong= __("Floor") + ": "
+                            span
+                    hr#hrCurrentCrop.hr-list
+                    .row.row-cols-auto
+                        .col.col-auto
+                            strong=__("Current Crop") + ": "
+                            span
+                        .col.col-auto
+                            strong=__("Planted At") + ": "
+                            span
+                        .col.col-auto
+                            strong=__("Cost") + ": "
+                            span
