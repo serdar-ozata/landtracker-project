@@ -4,6 +4,7 @@ A website for managing assets. You  can:
 + specify the asset type and provide additional data about that asset type
 + use the repository system for better management
 + adjust your preferences
+Website link: https://landtracker.live/
 # Note
 This is not by any means a finished project. I'm not planning to finish it for now since It's not a commercial project a rather a hobby one.
 # Setup
